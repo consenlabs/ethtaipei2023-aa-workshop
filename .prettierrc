@@ -1,5 +1,14 @@
 {
     "printWidth": 120,
     "tabWidth": 4,
-    "trailingComma": "all"
+    "trailingComma": "all",
+    "bracketSpacing": true,
+    "overrides": [
+        {
+            "files": ["*.json", "*.yaml", "*.yml"],
+            "options": {
+                "tabWidth": 2
+            }
+        }
+    ]
 }
