@@ -6,7 +6,7 @@
     "compile": "forge build --force",
     "format": "prettier --write .",
     "lint": "solhint \"contracts/**/*.sol\"",
-    "test": "forge test"
+    "test": "forge test --ffi"
   },
   "repository": {
     "type": "git",
