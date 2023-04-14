@@ -33,7 +33,7 @@ Running 1 test for test/VoidAccount.t.sol:VoidAccountTest
 
 ### 1. DepositAccount
 
-Account must have enough ETH balance on EntryPoint to pay the gas fee for executing a user operation. Please implement `contracts/DepositAccount.sol` to make `test/DepositAccount.t.sol` passed.
+Account must have enough ETH balance on `EntryPoint` to pay the gas fee for executing a user operation. Please implement `contracts/DepositAccount.sol` to make `test/DepositAccount.t.sol` passed.
 
 Run the following command to verify:
 
