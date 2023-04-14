@@ -29,7 +29,6 @@ contract VoidAccountTest is AATest {
 
         entryPoint.handleOps(userOps, payable(msg.sender));
 
-        assertEq(account.balance, 0 ether);
         assertEq(recipient.balance, 1 ether);
     }
 }

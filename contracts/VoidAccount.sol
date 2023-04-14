@@ -2,7 +2,7 @@
 pragma solidity 0.8.17;
 
 import { IAccount } from "aa/interfaces/IAccount.sol";
-import { UserOperation, UserOperationLib } from "aa/interfaces/UserOperation.sol";
+import { UserOperation } from "aa/interfaces/UserOperation.sol";
 
 contract VoidAccount is IAccount {
     function validateUserOp(
