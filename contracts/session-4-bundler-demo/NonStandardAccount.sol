@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: MIT
-/* solhint-disable no-unused-vars */
 pragma solidity 0.8.17;
 
-// import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+import "oz/utils/cryptography/ECDSA.sol";
 import { BaseAccount } from "aa/core/BaseAccount.sol";
 import { UserOperation } from "aa/interfaces/UserOperation.sol";
 import { IEntryPoint } from "aa/interfaces/IEntryPoint.sol";
@@ -13,12 +12,44 @@ contract NonStandardAccount is BaseAccount {
     address public immutable owner;
     IEntryPoint private immutable _entryPoint;
 
+    uint96 private _nonce;
+
     // solhint-disable-next-line no-empty-blocks
     receive() external payable {}
 
     constructor(IEntryPoint anEntryPoint, address _owner) {
         _entryPoint = anEntryPoint;
         owner = _owner;
+    }
+
+    modifier onlyOwner() {
+        _onlyOwner();
+        _;
+    }
+
+    function _onlyOwner() internal view {
+        //directly from EOA owner, or through the account itself (which gets redirected through execute())
+        require(msg.sender == owner || msg.sender == address(this), "only owner");
+    }
+
+    // Require the function call went through EntryPoint or owner
+    function _requireFromEntryPointOrOwner() internal view {
+        require(msg.sender == address(entryPoint()) || msg.sender == owner, "account: not Owner or EntryPoint");
+    }
+
+    /// @inheritdoc BaseAccount
+    function nonce() public view virtual override returns (uint256) {
+        return _nonce;
+    }
+
+    /// @inheritdoc BaseAccount
+    function entryPoint() public view virtual override returns (IEntryPoint) {
+        return _entryPoint;
+    }
+
+    /// implement template method of BaseAccount
+    function _validateAndUpdateNonce(UserOperation calldata userOp) internal override {
+        require(_nonce++ == userOp.nonce, "account: invalid nonce");
     }
 
     /// implement template method of BaseAccount
@@ -39,11 +70,6 @@ contract NonStandardAccount is BaseAccount {
         _call(dest, value, func);
     }
 
-    // Require the function call went through EntryPoint or owner
-    function _requireFromEntryPointOrOwner() internal view {
-        require(msg.sender == address(entryPoint()) || msg.sender == owner, "account: not Owner or EntryPoint");
-    }
-
     function _call(address target, uint256 value, bytes memory data) internal {
         (bool success, bytes memory result) = target.call{ value: value }(data);
         if (!success) {
@@ -51,16 +77,6 @@ contract NonStandardAccount is BaseAccount {
                 revert(add(result, 32), mload(result))
             }
         }
-    }
-
-    modifier onlyOwner() {
-        _onlyOwner();
-        _;
-    }
-
-    function _onlyOwner() internal view {
-        //directly from EOA owner, or through the account itself (which gets redirected through execute())
-        require(msg.sender == owner || msg.sender == address(this), "only owner");
     }
 
     /**
