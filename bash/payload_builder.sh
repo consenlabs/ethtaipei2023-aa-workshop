@@ -7,8 +7,8 @@ if [ "$TEST_PRIVATE_KEY" == "" ]; then
     exit 1
 fi
 
-if [ "$MUMBAI_RPC_URL" == "" ]; then
-    echo "env MUMBAI_RPC_URL must be set!"
+if [ "$RPC_URL" == "" ]; then
+    echo "env RPC_URL must be set!"
     exit 1
 fi
 
@@ -19,7 +19,7 @@ Help()
    echo ""
    echo "Required envs:" 
    echo "  TEST_PRIVATE_KEY: The private key used to sign userOperation"
-   echo "  MUMBAI_RPC_URL: The rpc url of polygon's testnet -- mumbai"
+   echo "  RPC_URL: The rpc url of polygon's testnet -- mumbai"
    echo ""
    echo "options:"
    echo "h   Print this Help."
@@ -30,8 +30,8 @@ Help()
 BuildPayload() 
 {
     echo $'Generating userOperation...'
-    blk=$(cast block latest --rpc-url $MUMBAI_RPC_URL | grep "number" | awk -F 'number' '{print $2}' | xargs)
-    PRIVATE_KEY=$TEST_PRIVATE_KEY forge test -vvv --fork-url=$MUMBAI_RPC_URL --fork-block-number=$blk --force --mp ./test/session-4-bundler-demo/BuildUserOp.t.sol | tail -n 13 | head -n 11 > results_forge
+    blk=$(cast block latest --rpc-url $RPC_URL | grep "number" | awk -F 'number' '{print $2}' | xargs)
+    PRIVATE_KEY=$TEST_PRIVATE_KEY forge test -vvv --fork-url=$RPC_URL --fork-block-number=$blk --force --mp ./test/session-4-bundler-demo/BuildUserOp.t.sol | tail -n 13 | head -n 11 > results_forge
 
     echo $'Building userOp http payload for bundler...\n'
     bundler_payload=$(python3 ./bash/foundry_output_to_json.py)
