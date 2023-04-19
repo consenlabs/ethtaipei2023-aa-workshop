@@ -60,15 +60,21 @@ contract NonStandardAccount is BaseAccount {
         UserOperation calldata userOp,
         bytes32 userOpHash
     ) internal virtual override returns (uint256 validationData) {
-        // uint256 lastBalance = address(this).balance;
-        // emit bundlerTestCall(address(this), lastBalance);
+        // Should fail
+        uint256 lastBalance = address(this).balance;
+        emit bundlerTestCall(address(this), lastBalance);
 
-        // // MUMBAI WETH: 0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa
-        // uint256 shoudlNotPassCall = IERC20(0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa).balanceOf(address(entryPoint()));
-        // emit bundlerTestCall(address(entryPoint()), shoudlNotPassCall);
+        // Should fail
+        uint256 shoudlNotPassCall = IERC20(0x87224F6D41DF6044ddd30a87bBdEeBc8c8CAc4f0).balanceOf(address(entryPoint()));
+        emit bundlerTestCall(address(entryPoint()), shoudlNotPassCall);
 
-        uint256 shouldPassCall = IERC20(0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa).balanceOf(address(this));
-        emit bundlerTestCall(address(this), shouldPassCall);
+        // Should pass
+        uint256 selfStorageERC20Call = IERC20(0x87224F6D41DF6044ddd30a87bBdEeBc8c8CAc4f0).balanceOf(address(this));
+        emit bundlerTestCall(address(this), selfStorageERC20Call);
+
+        // Should pass
+        uint256 selfStorageNonceCall = this.nonce();
+        emit bundlerTestCall(address(this), selfStorageNonceCall);
 
         bytes32 hash = userOpHash.toEthSignedMessageHash();
         if (owner != hash.recover(userOp.signature)) return SIG_VALIDATION_FAILED;
