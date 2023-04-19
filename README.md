@@ -50,3 +50,50 @@ Encountered 1 failing test in test/DepositAccount.t.sol:DepositAccountTest
 Running 1 test for test/DepositAccount.t.sol:DepositAccountTest
 [PASS] testExecuteUserOp() (gas: 115405)
 ```
+
+
+## Bundler Demo
+### Generate UserOp payload for bundler
+```bash
+export PRIVATE_KEY=${PRIVATE_KEY_FOR_SIGNING_USER_OP}
+export RPC_URL=${GOERLI_RPC_ENDPOINT} 
+
+# Run command at project root:
+./bash/payload_builder.sh
+
+# Expected output:
+# 
+# Generating userOperation...
+# Building userOp http payload for bundler...
+
+# ------------Result Payload--------------
+#
+# {"jsonrpc": "2.0", "id": 1, "method": "eth_sendUserOperation",
+#  "params": [{"sender": "0xF19518B9424D8B0444b09E5B4631E728367caC20", "nonce": "2", "initCode": "0x", 
+#  "callData": ...}
+# ...
+```
+
+### Generate UserOp payload and send to bundler
+```bash
+export PRIVATE_KEY=${PRIVATE_KEY_FOR_SIGNING_USER_OP}
+export RPC_URL=${GOERLI_RPC_ENDPOINT} 
+export BUNDLER_URL=${BUNDLER_ENDPOINT} # may use stackup free endpoint here
+
+# Run command at project root:
+./bash/payload_builder.sh -a
+
+# Expected output:
+# 
+# Generating userOperation...
+# Building userOp http payload for bundler...
+
+# ------------Result Payload--------------
+# 
+# {"jsonrpc": "2.0", "id": 1, "method":eth_sendUserOperation
+# ...}
+# 
+# ------------Sending payload to bundler--------------
+#
+# {"id":1,"jsonrpc":"2.0","result":"0xd9fb9b74014af5...."}
+```
