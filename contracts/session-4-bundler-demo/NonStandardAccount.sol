@@ -2,11 +2,14 @@
 pragma solidity 0.8.17;
 
 import "oz/utils/cryptography/ECDSA.sol";
+import "oz/token/ERC20/IERC20.sol";
 import { BaseAccount } from "aa/core/BaseAccount.sol";
 import { UserOperation } from "aa/interfaces/UserOperation.sol";
 import { IEntryPoint } from "aa/interfaces/IEntryPoint.sol";
 
 contract NonStandardAccount is BaseAccount {
+    event bundlerTestCall(address associatedAddress, uint256 placeholder);
+
     using ECDSA for bytes32;
 
     address public immutable owner;
@@ -58,7 +61,14 @@ contract NonStandardAccount is BaseAccount {
         bytes32 userOpHash
     ) internal virtual override returns (uint256 validationData) {
         uint256 lastBalance = address(this).balance;
-        require(lastBalance > 0, "calling OPCODE SELFBALANCE");
+        emit bundlerTestCall(address(this), lastBalance);
+
+        // MUMBAI WETH: 0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa
+        uint256 shoudlNotPassCall = IERC20(0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa).balanceOf(address(entryPoint()));
+        emit bundlerTestCall(address(entryPoint()), shoudlNotPassCall);
+
+        uint256 shouldPassCall = IERC20(0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa).balanceOf(address(this));
+        emit bundlerTestCall(address(this), shouldPassCall);
 
         bytes32 hash = userOpHash.toEthSignedMessageHash();
         if (owner != hash.recover(userOp.signature)) return SIG_VALIDATION_FAILED;
