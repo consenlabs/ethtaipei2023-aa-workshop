@@ -12,3 +12,4 @@ coverage.json
 artifacts/
 cache/
 broadcast/
+.vscode
