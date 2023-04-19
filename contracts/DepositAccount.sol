@@ -21,7 +21,7 @@ contract DepositAccount is IAccount {
         //
         // Account should deposit missing funds to EntryPoint to pay gas for the user operation.
         //
-        // There are two possible ways to achieve this goal:
+        // HINT: There are two possible ways to achieve this goal:
         // (1) Send ETH directly to EntryPoint
         // (2) Call `deposit` on EntryPoint
 

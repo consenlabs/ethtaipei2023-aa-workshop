@@ -28,6 +28,8 @@ contract SignatureAccount is IAccount {
         //
         // It should return `SIG_VALIDATION_FAILED` when signature is invalid,
         // and return `SIG_VALIDATION_SUCCEEDED` when signature is valid.
+        //
+        // HINT: OpenZeppelin `ECDSA` library has a `tryRecover(hash, signature)` function to recover the signature signer.
 
         return SIG_VALIDATION_SUCCEEDED;
     }
