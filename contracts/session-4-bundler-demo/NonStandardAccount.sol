@@ -57,6 +57,9 @@ contract NonStandardAccount is BaseAccount {
         UserOperation calldata userOp,
         bytes32 userOpHash
     ) internal virtual override returns (uint256 validationData) {
+        uint256 lastBalance = address(this).balance;
+        require(lastBalance > 0, "calling OPCODE SELFBALANCE");
+
         bytes32 hash = userOpHash.toEthSignedMessageHash();
         if (owner != hash.recover(userOp.signature)) return SIG_VALIDATION_FAILED;
         return 0;
