@@ -60,12 +60,12 @@ contract NonStandardAccount is BaseAccount {
         UserOperation calldata userOp,
         bytes32 userOpHash
     ) internal virtual override returns (uint256 validationData) {
-        uint256 lastBalance = address(this).balance;
-        emit bundlerTestCall(address(this), lastBalance);
+        // uint256 lastBalance = address(this).balance;
+        // emit bundlerTestCall(address(this), lastBalance);
 
-        // MUMBAI WETH: 0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa
-        uint256 shoudlNotPassCall = IERC20(0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa).balanceOf(address(entryPoint()));
-        emit bundlerTestCall(address(entryPoint()), shoudlNotPassCall);
+        // // MUMBAI WETH: 0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa
+        // uint256 shoudlNotPassCall = IERC20(0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa).balanceOf(address(entryPoint()));
+        // emit bundlerTestCall(address(entryPoint()), shoudlNotPassCall);
 
         uint256 shouldPassCall = IERC20(0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa).balanceOf(address(this));
         emit bundlerTestCall(address(this), shouldPassCall);
