@@ -20,9 +20,9 @@ contract DepositAccount is IAccount {
         // TODO: Implement this method to pass the tests in test/DepositAccount.t.sol
         //
         // Account should deposit missing funds to EntryPoint to pay gas for the user operation.
-        // 
+        //
         // There are two possible ways to achieve this goal:
-        // (1) Send ETH directly to EntryPoint 
+        // (1) Send ETH directly to EntryPoint
         // (2) Call `deposit` on EntryPoint
 
         return 0;
