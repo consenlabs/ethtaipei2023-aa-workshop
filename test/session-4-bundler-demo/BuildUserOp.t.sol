@@ -14,12 +14,9 @@ import { NonStandardAccount } from "../../contracts/session-4-bundler-demo/NonSt
 import { Helpers, HelperIAccount } from "./Helpers.sol";
 
 contract BuildUserOp is Test {
-    // StackUp v0.6.0 bundler entryPoint
-    // address immutable entryPointAddr = 0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789;
-
     address immutable entryPointAddr = 0x0576a174D229E3cFA37253523E645A78A0C91B57;
     address walletOwner = vm.rememberKey(vm.envUint("PRIVATE_KEY"));
-    address walletAccount = 0xeA719F4872F731AFD69B4fC1649349941230e6a7;
+    address walletAccount = 0xF19518B9424D8B0444b09E5B4631E728367caC20;
 
     Helpers helpers = new Helpers();
 
@@ -33,14 +30,14 @@ contract BuildUserOp is Test {
             callGasLimit: 43000,
             verificationGasLimit: 210000,
             preVerificationGas: 52000,
-            maxFeePerGas: 5 gwei,
+            maxFeePerGas: 52 gwei,
             maxPriorityFeePerGas: 1 gwei,
             paymasterAndData: bytes(""),
             signature: bytes("")
         });
 
     function testBundlerDemo() public {
-        // This userOp calldata sends 1 gwei of Matic to Mumbai's burning address
+        // This userOp calldata sends 1 gwei of ether to burning address
         address transferTo = 0x000000000000000000000000000000000000dEaD;
         uint256 transferAmount = 1 gwei;
         bytes memory userOpCalldata = abi.encodeWithSignature(
