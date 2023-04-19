@@ -53,13 +53,14 @@ Running 1 test for test/DepositAccount.t.sol:DepositAccountTest
 
 
 ## Bundler Demo
+*(prerequisite: environment needs python3 installed to run below script)*
 ### Generate UserOp payload for bundler
 ```bash
-export PRIVATE_KEY=${PRIVATE_KEY_FOR_SIGNING_USER_OP}
-export RPC_URL=${GOERLI_RPC_ENDPOINT} 
+$ export PRIVATE_KEY=${PRIVATE_KEY_FOR_SIGNING_USER_OP}
+$ export RPC_URL=${GOERLI_RPC_ENDPOINT} 
 
 # Run command at project root:
-./bash/payload_builder.sh
+$ ./bash/payload_builder.sh
 
 # Expected output:
 # 
@@ -76,12 +77,12 @@ export RPC_URL=${GOERLI_RPC_ENDPOINT}
 
 ### Generate UserOp payload and send to bundler
 ```bash
-export PRIVATE_KEY=${PRIVATE_KEY_FOR_SIGNING_USER_OP}
-export RPC_URL=${GOERLI_RPC_ENDPOINT} 
-export BUNDLER_URL=${BUNDLER_ENDPOINT} # may use stackup free endpoint here
+$ export PRIVATE_KEY=${PRIVATE_KEY_FOR_SIGNING_USER_OP}
+$ export RPC_URL=${GOERLI_RPC_ENDPOINT} 
+$ export BUNDLER_URL=${BUNDLER_ENDPOINT} # may use stackup free endpoint here
 
 # Run command at project root:
-./bash/payload_builder.sh -a
+$ ./bash/payload_builder.sh -a
 
 # Expected output:
 # 
