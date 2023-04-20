@@ -74,7 +74,7 @@ Running 2 tests for test/SignatureAccount.t.sol:SignatureAccountTest
 ---
 ## Bundler Demo
 ### Deploy 4337 Account on Goerli
-```bash!
+```bash
 $ export PRIVATE_KEY=${PRIVATE_KEY_OF_DEPLOYER}
 $ export ACCOUNT_OWNER_ADDR=${OWNER_ADDRESS_OF_ACCOUNT}
 $ export RPC_URL=${GOERLI_RPC_ENDPOINT} 
