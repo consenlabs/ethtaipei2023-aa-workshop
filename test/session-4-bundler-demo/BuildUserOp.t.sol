@@ -15,8 +15,7 @@ import { Helpers, HelperIAccount } from "./Helpers.sol";
 
 contract BuildUserOp is Test {
     address immutable entryPointAddr = 0x0576a174D229E3cFA37253523E645A78A0C91B57;
-    address walletOwner = vm.rememberKey(vm.envUint("PRIVATE_KEY"));
-    address walletAccount = 0xF19518B9424D8B0444b09E5B4631E728367caC20;
+    address account = vm.envAddress("ACCOUNT_ADDR");
 
     Helpers helpers = new Helpers();
 
@@ -30,25 +29,25 @@ contract BuildUserOp is Test {
             callGasLimit: 43000,
             verificationGasLimit: 210000,
             preVerificationGas: 52000,
-            maxFeePerGas: 52 gwei,
+            maxFeePerGas: 10 gwei,
             maxPriorityFeePerGas: 1 gwei,
             paymasterAndData: bytes(""),
             signature: bytes("")
         });
 
     function testBundlerDemo() public {
-        // This userOp calldata sends 1 gwei of ether to burning address
+        // This userOp calldata sends 0.01 gwei of ether to burning address
         address transferTo = 0x000000000000000000000000000000000000dEaD;
-        uint256 transferAmount = 1 gwei;
+        uint256 transferAmount = 0.01 gwei;
         bytes memory userOpCalldata = abi.encodeWithSignature(
             "execute(address,uint256,bytes)",
             transferTo,
             transferAmount,
             bytes("")
         );
-        userOpTemplate.sender = walletAccount;
+        userOpTemplate.sender = account;
         userOpTemplate.callData = userOpCalldata;
-        userOpTemplate.nonce = HelperIAccount(walletAccount).nonce();
+        userOpTemplate.nonce = HelperIAccount(account).nonce();
 
         // Sign the userOp data
         bytes32 userOpHash = helpers.getUserOpHashFromMemory(
@@ -62,7 +61,7 @@ contract BuildUserOp is Test {
         // Call userOp from entryPoint contract
         UserOperation[] memory ops = new UserOperation[](1);
         ops[0] = userOpTemplate;
-        IEntryPoint(entryPointAddr).handleOps(ops, payable(walletOwner));
+        IEntryPoint(entryPointAddr).handleOps(ops, payable(msg.sender));
 
         helpers.logUserOp(userOpTemplate);
     }
