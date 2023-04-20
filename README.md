@@ -73,11 +73,25 @@ Running 2 tests for test/SignatureAccount.t.sol:SignatureAccountTest
 ```
 ---
 ## Bundler Demo
-*(prerequisite: environment needs python3 installed to run below script)*
+### Deploy 4337 Account on Goerli
+```bash!
+$ export PRIVATE_KEY=${PRIVATE_KEY_OF_DEPLOYER}
+$ export ACCOUNT_OWNER_ADDR=${OWNER_ADDRESS_OF_ACCOUNT}
+$ export RPC_URL=${GOERLI_RPC_ENDPOINT} 
+
+# Run command at project root:
+$ forge script ./script/bundler/DeployAccount.s.sol --rpc-url ${RPC_URL} --broadcast
+```
+Write down the deployed account address at this step, we will need it when generating userOp. 
+
+
 ### Generate UserOp payload for bundler
+*(prerequisite: environment needs python3 installed to run below script)*
 ```bash
+# The private key here corresponds to the account owner address
 $ export PRIVATE_KEY=${PRIVATE_KEY_FOR_SIGNING_USER_OP}
 $ export RPC_URL=${GOERLI_RPC_ENDPOINT} 
+$ export ACCOUNT_ADDR=${4337_ACCOUNT_ADDRESS}
 
 # Run command at project root:
 $ ./bash/payload_builder.sh
@@ -96,9 +110,12 @@ $ ./bash/payload_builder.sh
 ```
 
 ### Generate UserOp payload and send to bundler
+*(prerequisite: environment needs python3 installed to run below script)*
 ```bash
+# The private key here corresponds to the account owner address
 $ export PRIVATE_KEY=${PRIVATE_KEY_FOR_SIGNING_USER_OP}
 $ export RPC_URL=${GOERLI_RPC_ENDPOINT} 
+$ export ACCOUNT_ADDR=${4337_ACCOUNT_ADDRESS}
 $ export BUNDLER_URL=${BUNDLER_ENDPOINT} # may use stackup free endpoint here
 
 # Run command at project root:
