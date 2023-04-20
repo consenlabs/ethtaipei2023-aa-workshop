@@ -50,7 +50,7 @@ abstract contract AATest is Test {
         return keccak256(abi.encode(userOp.hash(), entrypoint, block.chainid));
     }
 
-    function logUserOp(UserOperation memory userOp) public view {
+    function logUserOp(UserOperation memory userOp) internal view {
         console.log(userOp.sender);
         console.log(userOp.nonce);
         console.logBytes(userOp.initCode);
