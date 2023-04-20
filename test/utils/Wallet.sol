@@ -9,6 +9,8 @@ struct Wallet {
 }
 
 library WalletLib {
+    using WalletLib for Wallet;
+
     function createRandomWallet(Vm vm) internal returns (Wallet memory) {
         string[] memory inputs = new string[](3);
         inputs[0] = "cast";
@@ -23,6 +25,10 @@ library WalletLib {
 
     function addr(Wallet memory w) internal pure returns (address payable) {
         return payable(w.vm.addr(w.privateKey));
+    }
+
+    function balance(Wallet memory w) internal view returns (uint256) {
+        return w.addr().balance;
     }
 
     function sign(Wallet memory w, bytes32 digest) internal pure returns (uint8 v, bytes32 r, bytes32 s) {

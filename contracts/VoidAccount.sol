@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MIT
+/* solhint-disable no-inline-assembly */
 pragma solidity 0.8.17;
 
 import { IAccount } from "aa/interfaces/IAccount.sol";
@@ -16,7 +17,6 @@ contract VoidAccount is IAccount {
     function execute(address target, uint256 value, bytes calldata data) external {
         (bool success, bytes memory result) = target.call{ value: value }(data);
         if (!success) {
-            /* solhint-disable no-inline-assembly */
             assembly {
                 revert(add(result, 32), mload(result))
             }
