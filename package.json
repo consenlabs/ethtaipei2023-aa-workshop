@@ -8,7 +8,8 @@
     "lint": "solhint \"contracts/**/*.sol\"",
     "test": "forge test --ffi",
     "test:VoidAccount": "npm run test -- --match-path test/VoidAccount.t.sol",
-    "test:DepositAccount": "npm run test -- --match-path test/DepositAccount.t.sol"
+    "test:DepositAccount": "npm run test -- --match-path test/DepositAccount.t.sol",
+    "test:SignatureAccount": "npm run test -- --match-path test/SignatureAccount.t.sol"
   },
   "repository": {
     "type": "git",
