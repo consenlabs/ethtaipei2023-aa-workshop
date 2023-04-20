@@ -1,14 +1,17 @@
 #!/bin/bash
-############################################################
-# Help                                                     #
-############################################################
-if [ "$PRIVATE_KEY" == "" ]; then
+
+if [[ $PRIVATE_KEY == "" ]]; then
     echo "env PRIVATE_KEY must be set!"
     exit 1
 fi
 
-if [ "$RPC_URL" == "" ]; then
+if [[ $RPC_URL == "" ]]; then
     echo "env RPC_URL must be set!"
+    exit 1
+fi
+
+if [[ $ACCOUNT_ADDR == "" ]]; then
+    echo "env ACCOUNT_ADDR must be set!"
     exit 1
 fi
 
@@ -58,7 +61,7 @@ while getopts "ha" option; do
         exit;;
 
       a)    
-        if [ "$BUNDLER_URL" == "" ]; then
+        if [[ $BUNDLER_URL == "" ]]; then
             echo "env BUNDLER_URL must be set!"
             exit 1
         fi
