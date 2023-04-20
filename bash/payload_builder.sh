@@ -34,7 +34,7 @@ BuildPayload()
 {
     echo $'Generating userOperation...'
     blk=$(cast block latest --rpc-url $RPC_URL | grep "number" | awk -F 'number' '{print $2}' | xargs)
-    PRIVATE_KEY=$PRIVATE_KEY forge test -vvv --fork-url=$RPC_URL --fork-block-number=$blk --force --mp ./test/session-4-bundler-demo/BuildUserOp.t.sol | tail -n 13 | head -n 11 > results_forge
+    PRIVATE_KEY=$PRIVATE_KEY forge test -vvv --fork-url=$RPC_URL --fork-block-number=$blk --force --mp ./test/bundler/BuildUserOp.t.sol | tail -n 13 | head -n 11 > results_forge
 
     echo $'Building userOp http payload for bundler...\n'
     bundler_payload=$(python3 ./bash/foundry_output_to_json.py)

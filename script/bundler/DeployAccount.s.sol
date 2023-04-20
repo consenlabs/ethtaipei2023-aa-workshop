@@ -4,7 +4,7 @@ pragma solidity 0.8.17;
 import "forge-std/Script.sol";
 
 import "aa/interfaces/IEntryPoint.sol";
-import { NonStandardAccount } from "../../contracts/session-4-bundler-demo/NonStandardAccount.sol";
+import { NonStandardAccount } from "../../contracts/bundler/NonStandardAccount.sol";
 
 contract DeployAccount is Script {
     // Account that sends deployment tx, needs to have funds for paying contract creation
