@@ -7,6 +7,10 @@ import { BaseAccount } from "aa/core/BaseAccount.sol";
 import { UserOperation } from "aa/interfaces/UserOperation.sol";
 import { IEntryPoint } from "aa/interfaces/IEntryPoint.sol";
 
+interface INonStandardAccount {
+    function nonce() external returns (uint256);
+}
+
 contract NonStandardAccount is BaseAccount {
     event bundlerTestCall(address associatedAddress, uint256 placeholder);
 
