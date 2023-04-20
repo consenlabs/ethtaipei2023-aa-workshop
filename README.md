@@ -51,6 +51,26 @@ Running 1 test for test/DepositAccount.t.sol:DepositAccountTest
 [PASS] testExecuteUserOp() (gas: 115405)
 ```
 
+### 2. SignatureAccount
+
+Account should verify signature on user operation is signed by owner. Please implement `contracts/SignatureAccount.sol` to make `test/SignatureAccount.t.sol` passed.
+
+Run the following command to verify:
+
+```bash
+$ npm run test:SignatureAccount
+
+# Before
+# ...
+Encountered 1 failing test in test/SignatureAccount.t.sol:SignatureAccountTest
+[FAIL. Reason: Call did not revert as expected] testCannotExecuteUserOpSignedByOther() (gas: 88380)
+
+# After
+# ...
+Running 2 tests for test/SignatureAccount.t.sol:SignatureAccountTest
+[PASS] testCannotExecuteUserOpByOther() (gas: 44437)
+[PASS] testExecuteUserOp() (gas: 98404)
+```
 
 ## Bundler Demo
 *(prerequisite: environment needs python3 installed to run below script)*
