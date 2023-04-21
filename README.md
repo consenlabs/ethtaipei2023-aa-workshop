@@ -1,4 +1,4 @@
-# ETH Taipei 2023 Account Abstraction Workshop
+\# ETH Taipei 2023 Account Abstraction Workshop
 
 [ERC-4337](https://eips.ethereum.org/EIPS/eip-4337) account abstraction workshop for ETH Taipei 2023.
 
@@ -71,67 +71,173 @@ Running 2 tests for test/SignatureAccount.t.sol:SignatureAccountTest
 [PASS] testCannotExecuteUserOpByOther() (gas: 44437)
 [PASS] testExecuteUserOp() (gas: 98404)
 ```
----
-## Bundler Demo
-### Deploy 4337 Account on Goerli
+
+### 3. InitCode
+
+With account factory, we can deploy account along with the first user operation by setting `initCode` field. Please implement `contracts/InitCode.sol` to make `test/InitCode.t.sol` passed.
+
 ```bash
-$ export PRIVATE_KEY=${PRIVATE_KEY_OF_DEPLOYER}
-$ export ACCOUNT_OWNER_ADDR=${OWNER_ADDRESS_OF_ACCOUNT}
-$ export RPC_URL=${GOERLI_RPC_ENDPOINT} 
+$ npm run test:InitCode
 
-# Run command at project root:
-$ forge script ./script/bundler/DeployAccount.s.sol --rpc-url ${RPC_URL} --broadcast
-```
-Write down the deployed account address at this step, we will need it when generating userOp. 
-
-
-### Generate UserOp payload for bundler
-*(prerequisite: environment needs python3 installed to run below script)*
-```bash
-# The private key here corresponds to the account owner address
-$ export PRIVATE_KEY=${PRIVATE_KEY_FOR_SIGNING_USER_OP}
-$ export RPC_URL=${GOERLI_RPC_ENDPOINT} 
-$ export ACCOUNT_ADDR=${4337_ACCOUNT_ADDRESS}
-
-# Run command at project root:
-$ ./bash/payload_builder.sh
-
-# Expected output:
-# 
-# Generating userOperation...
-# Building userOp http payload for bundler...
-
-# ------------Result Payload--------------
-#
-# {"jsonrpc": "2.0", "id": 1, "method": "eth_sendUserOperation",
-#  "params": [{"sender": "0xF19518B9424D8B0444b09E5B4631E728367caC20", "nonce": "2", "initCode": "0x", 
-#  "callData": ...}
+# Before
 # ...
+Encountered 1 failing test in test/InitCode.t.sol:InitCodeTest
+[FAIL. Reason: EvmError: Revert] testInitCode() (gas: 75414)
+
+# After
+# ...
+Running 1 test for test/InitCode.t.sol:InitCodeTest
+[PASS] testInitCode() (gas: 327206)
 ```
 
-### Generate UserOp payload and send to bundler
-*(prerequisite: environment needs python3 installed to run below script)*
+---
+
+## Bundler Demo
+
+For this demo, we will interact with two pre-deployed 4337 accounts on Sepolia testnet:
+
+1. `0x6137A181E3657A5dfd4Ca97C5bB1d50B3AAdb127`
+2. `0xa729a76caadb6fdcD9c198cEd19b5D4e54bA0485`
+3. `0x5C66F9D3D3BB0D44AeE535f2733561173FB13Dd0`
+
+
+### Interacting with Account using BANNED OPCODE
+The bundler should reject our request since we are calling a banned opcode in this account.
 ```bash
-# The private key here corresponds to the account owner address
-$ export PRIVATE_KEY=${PRIVATE_KEY_FOR_SIGNING_USER_OP}
-$ export RPC_URL=${GOERLI_RPC_ENDPOINT} 
-$ export ACCOUNT_ADDR=${4337_ACCOUNT_ADDRESS}
+$ export PRIVATE_KEY=123456
+$ export ACCOUNT_ADDR=0x6137A181E3657A5dfd4Ca97C5bB1d50B3AAdb127
+$ export RPC_URL=${SEPOLIA_ENDPOINT}
 $ export BUNDLER_URL=${BUNDLER_ENDPOINT} # may use stackup free endpoint here
 
 # Run command at project root:
 $ ./bash/payload_builder.sh -a
 
 # Expected output:
-# 
+#
 # Generating userOperation...
 # Building userOp http payload for bundler...
-
+#
 # ------------Result Payload--------------
-# 
-# {"jsonrpc": "2.0", "id": 1, "method":eth_sendUserOperation
-# ...}
+#
+# {
+#   "jsonrpc": "2.0",
+#   "id": 1,
+#   "method": "eth_sendUserOperation",
+#   "params": [
+#    ...
+#     },
+#     "0x0576a174D229E3cFA37253523E645A78A0C91B57"
+#   ]
+# }
 # 
 # ------------Sending payload to bundler--------------
 #
-# {"id":1,"jsonrpc":"2.0","result":"0xd9fb9b74014af5...."}
+# {
+#   "error": {
+#     "code": -32502,
+#     "data": "account uses banned opcode: SELFBALANCE",
+#     "message": "account uses banned opcode: SELFBALANCE"
+#   },
+#   "id": 1,
+#   "jsonrpc": "2.0"
+# }
+```
+
+### Interacting with Account accessing invalid Storage Slot
+The bundler should reject our request since we are not accessing the valid storage slot.
+```bash
+$ export PRIVATE_KEY=123456
+$ export ACCOUNT_ADDR=0xa729a76caadb6fdcD9c198cEd19b5D4e54bA0485
+$ export RPC_URL=${SEPOLIA_ENDPOINT}
+$ export BUNDLER_URL=${BUNDLER_ENDPOINT} # may use stackup free endpoint here
+
+# Run command at project root:
+$ ./bash/payload_builder.sh -a
+
+# Expected output:
+#
+# Generating userOperation...
+# Building userOp http payload for bundler...
+#
+# ------------Result Payload--------------
+#
+# {
+#   "jsonrpc": "2.0",
+#   "id": 1,
+#   "method": "eth_sendUserOperation",
+#   "params": [
+#    ...
+#     },
+#     "0x0576a174D229E3cFA37253523E645A78A0C91B57"
+#   ]
+# }
+# 
+# ------------Sending payload to bundler--------------
+#
+# {
+#   "error": {
+#     "code": -32502,
+#     "data": "account has forbidden read to 0x87224F6D41DF6044ddd30a87bBdEeBc8c8CAc4f0 slot 4dbb180290de92ae0711e87110c97f6daba9f11cdfc121096b461bdc56cfe39f",
+#     "message": "account has forbidden read to 0x87224F6D41DF6044ddd30a87bBdEeBc8c8CAc4f0 slot 4dbb180290de92ae0711e87110c97f6daba9f11cdfc121096b461bdc56cfe39f"
+#   },
+#   "id": 1,
+#   "jsonrpc": "2.0"
+# }
+```
+
+
+### Interacting with a standard valid Account
+The bundler should accept our request since this account doesn't violate any rule. Bundler will return the `userOpHash` if request accepted.
+```bash
+$ export PRIVATE_KEY=123456
+$ export ACCOUNT_ADDR=0x5C66F9D3D3BB0D44AeE535f2733561173FB13Dd0
+$ export RPC_URL=${SEPOLIA_ENDPOINT}
+$ export BUNDLER_URL=${BUNDLER_ENDPOINT} # may use stackup free endpoint here
+
+# Run command at project root:
+$ ./bash/payload_builder.sh -a
+
+# Expected output:
+#
+# Generating userOperation...
+# Building userOp http payload for bundler...
+#
+# ------------Result Payload--------------
+#
+# {
+#   "jsonrpc": "2.0",
+#   "id": 1,
+#   "method": "eth_sendUserOperation",
+#   "params": [
+#    ...
+#     },
+#     "0x0576a174D229E3cFA37253523E645A78A0C91B57"
+#   ]
+# } 
+#  
+# ------------Sending payload to bundler--------------
+#
+# {
+#   "id": 1,
+#   "jsonrpc": "2.0",
+#   "result": "0x744a21e2b6eaaa59c9481c9b3d9f99e0968dffece71df3dfb55bad4a8d4353cf"
+# }
+```
+
+### Deploy a standard 4337 Account on Sepolia
+Try modifying `contracts/bundler/NonStandardAccount.sol` then deploy the account and play with it. You may get some Sepolia eth on https://sepolia-faucet.pk910.de or https://sepoliafaucet.com/
+
+Hint:
+
+1. Comment out codes that will likely cause failure at Bundler's validation stage.  
+2. (Optional) The `_validateSignature` function of `NonStandardAccount.sol` isn't properly implemented yet, it doesn't do any signature check. Add a verification logic in the function so only wallet owner can use the account. 
+
+The following script will deploy 4337 account and automatically add deposit (0.01 ether) for it, make sure the deployer has enough funds.  
+```bash
+$ export PRIVATE_KEY=${PRIVATE_KEY_OF_DEPLOYER}
+$ export ACCOUNT_OWNER_ADDR=${OWNER_ADDRESS_OF_ACCOUNT}
+$ export RPC_URL=${SEPOLIA_ENDPOINT}
+
+# Run command at project root:
+$ forge script ./script/bundler/DeployAccount.s.sol --rpc-url ${RPC_URL} --broadcast
 ```
