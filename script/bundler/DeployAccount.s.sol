@@ -21,9 +21,5 @@ contract DeployAccount is Script {
             ownerAccount
         );
         console.log("Deployed account address:", address(account));
-
-        (bool success, ) = address(account).call{ value: 0.1 ether }("");
-        require(success, "Error sending fund to new deployed account");
-        console.log("Successfully send 0.1 ether to account");
     }
 }
