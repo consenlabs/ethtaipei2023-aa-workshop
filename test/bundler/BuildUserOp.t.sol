@@ -26,7 +26,7 @@ contract BuildUserOp is AATest {
             callGasLimit: 43000,
             verificationGasLimit: 210000,
             preVerificationGas: 52000,
-            maxFeePerGas: 10 gwei,
+            maxFeePerGas: 15 gwei,
             maxPriorityFeePerGas: 1 gwei,
             paymasterAndData: bytes(""),
             signature: bytes("")
