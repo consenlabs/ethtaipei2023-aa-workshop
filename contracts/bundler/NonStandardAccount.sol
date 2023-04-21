@@ -69,11 +69,11 @@ contract NonStandardAccount is BaseAccount {
         emit bundlerTestCall(address(this), lastBalance);
 
         // Should fail
-        uint256 shoudlNotPassCall = IERC20(0x87224F6D41DF6044ddd30a87bBdEeBc8c8CAc4f0).balanceOf(address(entryPoint()));
+        uint256 shoudlNotPassCall = IERC20(0xf531B8F309Be94191af87605CfBf600D71C2cFe0).balanceOf(address(entryPoint()));
         emit bundlerTestCall(address(entryPoint()), shoudlNotPassCall);
 
         // Should pass
-        uint256 selfStorageERC20Call = IERC20(0x87224F6D41DF6044ddd30a87bBdEeBc8c8CAc4f0).balanceOf(address(this));
+        uint256 selfStorageERC20Call = IERC20(0xf531B8F309Be94191af87605CfBf600D71C2cFe0).balanceOf(address(this));
         emit bundlerTestCall(address(this), selfStorageERC20Call);
 
         // Should pass
@@ -87,6 +87,7 @@ contract NonStandardAccount is BaseAccount {
         }
 
         // Returns 0 anyway so everyone can pass signature validation
+        // (Optional) TODO: Add some verification logic here so only wallet owner can use this account
         return 0;
     }
 
