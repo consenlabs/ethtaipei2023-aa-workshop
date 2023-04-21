@@ -46,12 +46,6 @@ contract BuildUserOp is AATest {
         userOpTemplate.callData = userOpCalldata;
         userOpTemplate.nonce = INonStandardAccount(account).nonce();
 
-        // Sign the userOp data
-        bytes32 userOpHash = getUserOpHash(userOpTemplate, entryPointAddr);
-
-        (uint8 v, bytes32 r, bytes32 s) = vm.sign(vm.envUint("PRIVATE_KEY"), ECDSA.toEthSignedMessageHash(userOpHash));
-        userOpTemplate.signature = abi.encodePacked(r, s, v);
-
         // Call userOp from entryPoint contract
         UserOperation[] memory ops = new UserOperation[](1);
         ops[0] = userOpTemplate;
