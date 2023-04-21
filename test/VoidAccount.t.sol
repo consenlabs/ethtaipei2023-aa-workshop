@@ -9,11 +9,12 @@ import { AATest } from "./utils/AATest.sol";
 import { Wallet, WalletLib } from "./utils/Wallet.sol";
 
 contract VoidAccountTest is AATest {
-    Wallet owner = WalletLib.createRandomWallet(vm);
+    using WalletLib for Wallet;
+
     address account = address(new VoidAccount());
 
     function testExecuteUserOp() public {
-        address recipient = makeAddr("recipient");
+        Wallet memory recipient = WalletLib.createRandomWallet(vm);
 
         entryPoint.depositTo{ value: 1 ether }(account);
         deal(account, 1 ether);
@@ -21,14 +22,13 @@ contract VoidAccountTest is AATest {
         // Transfer 1 ether from account to recipient
         UserOperation memory userOp = createUserOp();
         userOp.sender = account;
-        userOp.callData = abi.encodeWithSelector(VoidAccount.execute.selector, recipient, 1 ether, bytes(""));
-        signUserOp(owner, userOp);
+        userOp.callData = abi.encodeWithSelector(VoidAccount.execute.selector, recipient.addr(), 1 ether, bytes(""));
 
         UserOperation[] memory userOps = new UserOperation[](1);
         userOps[0] = userOp;
 
         entryPoint.handleOps(userOps, payable(msg.sender));
 
-        assertEq(recipient.balance, 1 ether);
+        assertEq(recipient.balance(), 1 ether);
     }
 }

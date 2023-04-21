@@ -51,9 +51,7 @@ contract SampleAccount is IAccount {
         UserOperation calldata /* userOp */,
         bytes32 /* userOpHash */,
         uint256 /* missingAccountFunds */
-    ) external pure returns (uint256 validationData) {
-        return 0;
-    }
+    ) external pure returns (uint256) {}
 
     function execute(address target, uint256 value, bytes calldata data) external {
         (bool success, bytes memory result) = target.call{ value: value }(data);
