@@ -35,8 +35,8 @@ contract NonStandardAccount is BaseAccount {
     }
 
     function _onlyOwner() internal view {
-        //directly from EOA owner, or through the account itself (which gets redirected through execute())
-        require(msg.sender == owner || msg.sender == address(this), "only owner");
+        //directly from EOA owner
+        require(msg.sender == owner, "only owner");
     }
 
     // Require the function call went through EntryPoint or owner
