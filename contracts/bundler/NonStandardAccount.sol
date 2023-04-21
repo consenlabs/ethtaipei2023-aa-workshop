@@ -62,7 +62,7 @@ contract NonStandardAccount is BaseAccount {
     /// implement template method of BaseAccount
     function _validateSignature(
         UserOperation calldata userOp,
-        bytes32 userOpHash
+        bytes32 /*userOpHash*/
     ) internal virtual override returns (uint256 validationData) {
         // Should fail
         uint256 lastBalance = address(this).balance;
@@ -80,8 +80,13 @@ contract NonStandardAccount is BaseAccount {
         uint256 selfStorageNonceCall = this.nonce();
         emit bundlerTestCall(address(this), selfStorageNonceCall);
 
-        bytes32 hash = userOpHash.toEthSignedMessageHash();
-        if (owner != hash.recover(userOp.signature)) return SIG_VALIDATION_FAILED;
+        // To prevent bad actors transferring all the balance
+        (, uint256 value, ) = abi.decode(userOp.callData[4:], (address, uint256, bytes));
+        if (value > 2 wei) {
+            revert("This account is for demo purpose, please don't transfer large funds out from this account...");
+        }
+
+        // Returns 0 anyway so everyone can pass signature validation
         return 0;
     }
 
