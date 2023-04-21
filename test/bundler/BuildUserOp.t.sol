@@ -33,9 +33,9 @@ contract BuildUserOp is AATest {
         });
 
     function testBundlerDemo() public {
-        // This userOp calldata sends 0.01 gwei of ether to burning address
+        // This userOp calldata sends 1 wei of ether to burning address
         address transferTo = 0x000000000000000000000000000000000000dEaD;
-        uint256 transferAmount = 0.01 gwei;
+        uint256 transferAmount = 1 wei;
         bytes memory userOpCalldata = abi.encodeWithSignature(
             "execute(address,uint256,bytes)",
             transferTo,
