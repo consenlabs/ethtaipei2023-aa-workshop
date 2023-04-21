@@ -13,6 +13,8 @@ contract DeployAccount is Script {
     // Use an account that is under your control, we will need this account's private key to sign userOperation.
     address ownerAccount = vm.envAddress("ACCOUNT_OWNER_ADDR");
 
+    // Deploys contract NonStandardAccount at contracts/bundler/NonStandardAccount.sol
+    // then automatically deposits 0.01 ether to the account from deployer
     function run() public {
         vm.startBroadcast(deployer);
 
@@ -21,5 +23,8 @@ contract DeployAccount is Script {
             ownerAccount
         );
         console.log("Deployed account address:", address(account));
+
+        account.addDeposit{ value: 0.01 ether }();
+        console.log("Transferred 0.01 ether to account");
     }
 }
