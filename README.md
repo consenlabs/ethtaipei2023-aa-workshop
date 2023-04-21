@@ -106,7 +106,7 @@ The bundler should reject our request since we are calling a banned opcode in th
 $ export PRIVATE_KEY=123456
 $ export ACCOUNT_ADDR=0x6137A181E3657A5dfd4Ca97C5bB1d50B3AAdb127
 $ export RPC_URL=${SEPOLIA_ENDPOINT}
-$ export BUNDLER_URL=${BUNDLER_ENDPOINT} # may use stackup free endpoint here
+$ export BUNDLER_URL=${BUNDLER_ENDPOINT}
 
 # Run command at project root:
 $ ./bash/payload_builder.sh -a
@@ -148,7 +148,7 @@ The bundler should reject our request since we are not accessing the valid stora
 $ export PRIVATE_KEY=123456
 $ export ACCOUNT_ADDR=0xa729a76caadb6fdcD9c198cEd19b5D4e54bA0485
 $ export RPC_URL=${SEPOLIA_ENDPOINT}
-$ export BUNDLER_URL=${BUNDLER_ENDPOINT} # may use stackup free endpoint here
+$ export BUNDLER_URL=${BUNDLER_ENDPOINT}
 
 # Run command at project root:
 $ ./bash/payload_builder.sh -a
