@@ -98,7 +98,6 @@ For this demo, we will interact with two pre-deployed 4337 accounts on Sepolia t
 
 1. `0x6137A181E3657A5dfd4Ca97C5bB1d50B3AAdb127`
 2. `0xa729a76caadb6fdcD9c198cEd19b5D4e54bA0485`
-3. `0x5C66F9D3D3BB0D44AeE535f2733561173FB13Dd0`
 
 
 ### Interacting with Account using BANNED OPCODE
@@ -182,45 +181,6 @@ $ ./bash/payload_builder.sh -a
 #   },
 #   "id": 1,
 #   "jsonrpc": "2.0"
-# }
-```
-
-
-### Interacting with a standard valid Account
-The bundler should accept our request since this account doesn't violate any rule. Bundler will return the `userOpHash` if request accepted.
-```bash
-$ export PRIVATE_KEY=123456
-$ export ACCOUNT_ADDR=0x5C66F9D3D3BB0D44AeE535f2733561173FB13Dd0
-$ export RPC_URL=${SEPOLIA_ENDPOINT}
-$ export BUNDLER_URL=${BUNDLER_ENDPOINT} # may use stackup free endpoint here
-
-# Run command at project root:
-$ ./bash/payload_builder.sh -a
-
-# Expected output:
-#
-# Generating userOperation...
-# Building userOp http payload for bundler...
-#
-# ------------Result Payload--------------
-#
-# {
-#   "jsonrpc": "2.0",
-#   "id": 1,
-#   "method": "eth_sendUserOperation",
-#   "params": [
-#    ...
-#     },
-#     "0x0576a174D229E3cFA37253523E645A78A0C91B57"
-#   ]
-# } 
-#  
-# ------------Sending payload to bundler--------------
-#
-# {
-#   "id": 1,
-#   "jsonrpc": "2.0",
-#   "result": "0x744a21e2b6eaaa59c9481c9b3d9f99e0968dffece71df3dfb55bad4a8d4353cf"
 # }
 ```
 
