@@ -16,16 +16,14 @@ contract DepositAccount is IAccount {
         UserOperation calldata /* userOp */,
         bytes32 /* userOpHash */,
         uint256 missingAccountFunds
-    ) external returns (uint256 validationData) {
+    ) external returns (uint256) {
         // TODO: Implement this method to pass the tests in test/DepositAccount.t.sol
         //
         // Account should deposit missing funds to EntryPoint to pay gas for the user operation.
         //
         // HINT: There are two possible ways to achieve this goal:
         // (1) Send ETH directly to EntryPoint
-        // (2) Call `deposit` on EntryPoint
-
-        return 0;
+        // (2) Call `depositTo` on EntryPoint
     }
 
     function execute(address target, uint256 value, bytes calldata data) external {
