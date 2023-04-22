@@ -35,12 +35,12 @@ contract NonStandardAccount is IAccount {
         uint256 missingAccountFunds
     ) external override returns (uint256 validationData) {
         // Should fail
-        // uint256 lastBalance = address(this).balance;
-        // emit bundlerTestCall(address(this), lastBalance);
+        uint256 lastBalance = address(this).balance;
+        emit bundlerTestCall(address(this), lastBalance);
 
         // Should fail
-        // uint256 nonSelfStorageERC20Call = IERC20(WETH).balanceOf(entryPoint);
-        // emit bundlerTestCall(entryPoint, nonSelfStorageERC20Call);
+        uint256 nonSelfStorageERC20Call = IERC20(WETH).balanceOf(entryPoint);
+        emit bundlerTestCall(entryPoint, nonSelfStorageERC20Call);
 
         // Should pass
         uint256 selfStorageERC20Call = IERC20(WETH).balanceOf(address(this));
