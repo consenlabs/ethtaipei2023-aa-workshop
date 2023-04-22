@@ -234,13 +234,17 @@ $ ./bash/payload_builder.sh -a
 # }
 ```
 
-### Deploy a standard 4337 Account on Sepolia
+---
 
-The following script will deploy a `SimpleAccountFactory` and use the factory to create a `SimpleAccount`. (`SimpleAccountFactory` & `SimpleAccount` are both from officical sample code.)
+## Deploy a standard 4337 Account on Sepolia
+
+The following script will deploy a `SimpleAccountFactory` and use the factory to create a `SimpleAccount`(`SimpleAccountFactory` & `SimpleAccount` are both from officical sample code).
 
 ```bash
-$ export PRIVATE_KEY=${PRIVATE_KEY_OF_DEPLOYER}
+# Make sure account owner address is under your control,
+# you will need its private key to sign userOp
 $ export ACCOUNT_OWNER_ADDR=${OWNER_ADDRESS_OF_ACCOUNT}
+$ export PRIVATE_KEY=${PRIVATE_KEY_OF_DEPLOYER}
 $ export RPC_URL=${SEPOLIA_ENDPOINT}
 
 # Run command at project root:
