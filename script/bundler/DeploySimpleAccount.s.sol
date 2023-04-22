@@ -1,9 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.17;
 
-/* solhint-disable avoid-low-level-calls */
-/* solhint-disable no-inline-assembly */
-/* solhint-disable reason-string */
+/* solhint-disable avoid-low-level-calls no-inline-assembly reason-string */
 
 import "forge-std/Script.sol";
 import "aa/interfaces/IEntryPoint.sol";

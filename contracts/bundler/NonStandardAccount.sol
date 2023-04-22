@@ -3,8 +3,6 @@ pragma solidity 0.8.17;
 
 import "oz/token/ERC20/IERC20.sol";
 import { UserOperation } from "aa/interfaces/UserOperation.sol";
-import { SignatureAccount } from "../SignatureAccount.sol";
-
 import { IAccount } from "aa/interfaces/IAccount.sol";
 
 contract NonStandardAccount is IAccount {
