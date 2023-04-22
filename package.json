@@ -9,7 +9,8 @@
     "test": "forge test --ffi",
     "test:VoidAccount": "npm run test -- --match-path test/VoidAccount.t.sol",
     "test:DepositAccount": "npm run test -- --match-path test/DepositAccount.t.sol",
-    "test:SignatureAccount": "npm run test -- --match-path test/SignatureAccount.t.sol"
+    "test:SignatureAccount": "npm run test -- --match-path test/SignatureAccount.t.sol",
+    "test:InitCode": "npm run test -- --match-path test/InitCode.t.sol"
   },
   "repository": {
     "type": "git",
