@@ -33,13 +33,13 @@ contract DepositAccount is IAccount {
         //
         // Note that it cannot use `send` or `transfer` to deposit missing funds,
         // because these two calls limit gas to only 2,300.
-        // 
-        // Although 2,300 gas is enough for plain transfer, EntryPoint needs extra operations 
+        //
+        // Although 2,300 gas is enough for plain transfer, EntryPoint needs extra operations
         // to update its deposit balance storage upon receiving the fund.
         // (https://github.com/eth-infinitism/account-abstraction/blob/9b5f2e4bb30a81aa30761749d9e2e43fee64c768/contracts/core/StakeManager.sol#L35-L37)
-        (bool success, ) = payable(entryPoint).call{value : missingAccountFunds }("");
+        (bool success, ) = payable(entryPoint).call{ value: missingAccountFunds }("");
         // Ignore failure because its EntryPoint's job to verify.
-        (success); 
+        (success);
 
         // (2) Call `depositTo` on EntryPoint
         // IEntryPoint(entryPoint).depositTo{ value: missingAccountFunds }(address(this));

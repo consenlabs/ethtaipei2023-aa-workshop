@@ -31,6 +31,10 @@ contract SignatureAccount is IAccount {
         //
         // HINT: OpenZeppelin `ECDSA` library has a `tryRecover(hash, signature)` function to recover the signature signer.
 
+        (address signer, ) = ECDSA.tryRecover(userOpHash, userOp.signature);
+        if (signer != owner) {
+            return SIG_VALIDATION_FAILED;
+        }
         return SIG_VALIDATION_SUCCEEDED;
     }
 
