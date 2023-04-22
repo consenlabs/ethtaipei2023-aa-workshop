@@ -74,7 +74,7 @@ Running 2 tests for test/SignatureAccount.t.sol:SignatureAccountTest
 
 ### 3. InitCode
 
-With account factory, we can deploy account along with the first user operation by setting `initCode` field. Please implement `contracts/InitCode.sol` to make `test/InitCode.t.sol` passed.
+With account factory, we can deploy account along with the first user operation by providing deployment info in `initCode` field. Please implement `contracts/InitCode.sol` to make `test/InitCode.t.sol` passed.
 
 ```bash
 $ npm run test:InitCode
