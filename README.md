@@ -94,18 +94,21 @@ Running 1 test for test/InitCode.t.sol:InitCodeTest
 
 ## Bundler Demo
 
-For this demo, we will interact with two pre-deployed 4337 accounts on Sepolia testnet:
+_(prerequisite: environment needs python3 installed to run below script)_
 
-1. `0x6137A181E3657A5dfd4Ca97C5bB1d50B3AAdb127`
-2. `0xa729a76caadb6fdcD9c198cEd19b5D4e54bA0485`
+For this demo, we will interact with three pre-deployed 4337 accounts on Sepolia testnet:
+
+1. `0x9F40AeA5c5E153eC69De85641561860f24dC85E6` (Account accessing BANNED OPCODE)
+2. `0x5AB93E8d529Cae627F33Ab4d30EFD5fD611e778e` (Account accessing invalid Storage Slot)
+3. `0x9865B0fB2a2F71A434AfdAa50dfF1A0e6c2F353d` (Account that does not violate anything)
 
 ### Interacting with Account using BANNED OPCODE
 
 The bundler should reject our request since we are calling a banned opcode in this account.
 
 ```bash
-$ export PRIVATE_KEY=123456
-$ export ACCOUNT_ADDR=0x6137A181E3657A5dfd4Ca97C5bB1d50B3AAdb127
+$ export PRIVATE_KEY=$RANDOM
+$ export ACCOUNT_ADDR=0x9F40AeA5c5E153eC69De85641561860f24dC85E6
 $ export RPC_URL=${SEPOLIA_ENDPOINT}
 $ export BUNDLER_URL=${BUNDLER_ENDPOINT}
 
@@ -148,8 +151,8 @@ $ ./bash/payload_builder.sh -a
 The bundler should reject our request since we are not accessing the valid storage slot.
 
 ```bash
-$ export PRIVATE_KEY=123456
-$ export ACCOUNT_ADDR=0xa729a76caadb6fdcD9c198cEd19b5D4e54bA0485
+$ export PRIVATE_KEY=$RANDOM
+$ export ACCOUNT_ADDR=0x5AB93E8d529Cae627F33Ab4d30EFD5fD611e778e
 $ export RPC_URL=${SEPOLIA_ENDPOINT}
 $ export BUNDLER_URL=${BUNDLER_ENDPOINT}
 
@@ -187,16 +190,54 @@ $ ./bash/payload_builder.sh -a
 # }
 ```
 
+### Interacting with a standard valid Account
+
+The bundler should accept our request since this account doesn't violate any rule. Bundler will return the `userOpHash` if request accepted.
+
+```bash
+$ export PRIVATE_KEY=$RANDOM
+$ export ACCOUNT_ADDR=0x9865B0fB2a2F71A434AfdAa50dfF1A0e6c2F353d
+$ export RPC_URL=${SEPOLIA_ENDPOINT}
+$ export BUNDLER_URL=${BUNDLER_ENDPOINT}
+
+# Run command at project root:
+$ ./bash/payload_builder.sh -a
+# Expected output:
+#
+#
+# Generating userOperation...
+# Building userOp http payload for bundler...
+#
+# ------------Result Payload--------------
+#
+# {"jsonrpc": "2.0", "id": 1, "method":eth_sendUserOperation
+# ...}
+#
+#
+# {
+#   "jsonrpc": "2.0",
+#   "id": 1,
+#   "method": "eth_sendUserOperation",
+#   "params": [
+#    ...
+#     },
+#     "0x0576a174D229E3cFA37253523E645A78A0C91B57"
+#   ]
+# }
+#
+# ------------Sending payload to bundler--------------
+#
+# {"id":1,"jsonrpc":"2.0","result":"0xd9fb9b74014af5...."}
+# {
+#   "id": 1,
+#   "jsonrpc": "2.0",
+#   "result": "0x744a21e2b6eaaa59c9481c9b3d9f99e0968dffece71df3dfb55bad4a8d4353cf"
+# }
+```
+
 ### Deploy a standard 4337 Account on Sepolia
 
-Try modifying `contracts/bundler/NonStandardAccount.sol` then deploy the account and play with it. You may get some Sepolia eth on https://sepolia-faucet.pk910.de or https://sepoliafaucet.com/
-
-Hint:
-
-1. Comment out codes that will likely cause failure at Bundler's validation stage.
-2. (Optional) The `_validateSignature` function of `NonStandardAccount.sol` isn't properly implemented yet, it doesn't do any signature check. Add a verification logic in the function so only wallet owner can use the account.
-
-The following script will deploy 4337 account and automatically add deposit (0.01 ether) for it, make sure the deployer has enough funds.
+The following script will deploy a `SimpleAccountFactory` and use the factory to create a `SimpleAccount`. (`SimpleAccountFactory` & `SimpleAccount` are both from officical sample code.)
 
 ```bash
 $ export PRIVATE_KEY=${PRIVATE_KEY_OF_DEPLOYER}
@@ -204,5 +245,5 @@ $ export ACCOUNT_OWNER_ADDR=${OWNER_ADDRESS_OF_ACCOUNT}
 $ export RPC_URL=${SEPOLIA_ENDPOINT}
 
 # Run command at project root:
-$ forge script ./script/bundler/DeployAccount.s.sol --rpc-url ${RPC_URL} --broadcast
+$ forge script ./script/bundler/DeploySimpleAccount.s.sol --tc Deploy --rpc-url $RPC_URL --broadcast
 ```
