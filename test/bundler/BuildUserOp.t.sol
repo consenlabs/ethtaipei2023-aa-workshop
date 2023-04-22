@@ -8,7 +8,7 @@ import "oz/utils/cryptography/ECDSA.sol";
 import "aa/interfaces/UserOperation.sol";
 import { IEntryPoint } from "aa/interfaces/IEntryPoint.sol";
 
-import { NonStandardAccount, INonStandardAccount } from "../../contracts/bundler/NonStandardAccount.sol";
+import { NonStandardAccount } from "../../contracts/bundler/NonStandardAccount.sol";
 
 import { AATest } from "../utils/AATest.sol";
 
@@ -44,7 +44,6 @@ contract BuildUserOp is AATest {
         );
         userOpTemplate.sender = account;
         userOpTemplate.callData = userOpCalldata;
-        userOpTemplate.nonce = INonStandardAccount(account).nonce();
 
         // Sign the userOp data
         bytes32 userOpHash = getUserOpHash(userOpTemplate, entryPointAddr);
