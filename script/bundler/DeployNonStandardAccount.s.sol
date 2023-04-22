@@ -6,25 +6,26 @@ import "forge-std/Script.sol";
 import "aa/interfaces/IEntryPoint.sol";
 import { NonStandardAccount } from "../../contracts/bundler/NonStandardAccount.sol";
 
-contract DeployAccount is Script {
+contract Deploy is Script {
     // Account that sends deployment tx, needs to have funds for paying contract creation
     address deployer = vm.rememberKey(vm.envUint("PRIVATE_KEY"));
     // The owner account (an EOA account) of the deployed 4337 account
     // Use an account that is under your control, we will need this account's private key to sign userOperation.
     address ownerAccount = vm.envAddress("ACCOUNT_OWNER_ADDR");
 
+    address immutable entryPoint = 0x0576a174D229E3cFA37253523E645A78A0C91B57;
+
     // Deploys contract NonStandardAccount at contracts/bundler/NonStandardAccount.sol
-    // then automatically deposits 0.01 ether to the account from deployer
+    // then deposits 0.01 ether for the account from deployer
     function run() public {
         vm.startBroadcast(deployer);
 
-        NonStandardAccount account = new NonStandardAccount(
-            IEntryPoint(0x0576a174D229E3cFA37253523E645A78A0C91B57),
-            ownerAccount
-        );
+        NonStandardAccount account = new NonStandardAccount(ownerAccount);
         console.log("Deployed account address:", address(account));
 
-        account.addDeposit{ value: 0.01 ether }();
-        console.log("Transferred 0.01 ether to account");
+        (bool success, ) = entryPoint.call{ value: 0.01 ether }(
+            abi.encodeWithSignature("depositTo(address)", address(account))
+        );
+        require(success);
     }
 }
