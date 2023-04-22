@@ -1,4 +1,4 @@
-\# ETH Taipei 2023 Account Abstraction Workshop
+# ETH Taipei 2023 Account Abstraction Workshop
 
 [ERC-4337](https://eips.ethereum.org/EIPS/eip-4337) account abstraction workshop for ETH Taipei 2023.
 
@@ -74,7 +74,7 @@ Running 2 tests for test/SignatureAccount.t.sol:SignatureAccountTest
 
 ### 3. InitCode
 
-With account factory, we can deploy account along with the first user operation by setting `initCode` field. Please implement `contracts/InitCode.sol` to make `test/InitCode.t.sol` passed.
+With account factory, we can deploy account along with the first user operation by providing deployment info in `initCode` field. Please implement `contracts/InitCode.sol` to make `test/InitCode.t.sol` passed.
 
 ```bash
 $ npm run test:InitCode
@@ -99,9 +99,10 @@ For this demo, we will interact with two pre-deployed 4337 accounts on Sepolia t
 1. `0x6137A181E3657A5dfd4Ca97C5bB1d50B3AAdb127`
 2. `0xa729a76caadb6fdcD9c198cEd19b5D4e54bA0485`
 
-
 ### Interacting with Account using BANNED OPCODE
+
 The bundler should reject our request since we are calling a banned opcode in this account.
+
 ```bash
 $ export PRIVATE_KEY=123456
 $ export ACCOUNT_ADDR=0x6137A181E3657A5dfd4Ca97C5bB1d50B3AAdb127
@@ -128,7 +129,7 @@ $ ./bash/payload_builder.sh -a
 #     "0x0576a174D229E3cFA37253523E645A78A0C91B57"
 #   ]
 # }
-# 
+#
 # ------------Sending payload to bundler--------------
 #
 # {
@@ -143,7 +144,9 @@ $ ./bash/payload_builder.sh -a
 ```
 
 ### Interacting with Account accessing invalid Storage Slot
+
 The bundler should reject our request since we are not accessing the valid storage slot.
+
 ```bash
 $ export PRIVATE_KEY=123456
 $ export ACCOUNT_ADDR=0xa729a76caadb6fdcD9c198cEd19b5D4e54bA0485
@@ -170,7 +173,7 @@ $ ./bash/payload_builder.sh -a
 #     "0x0576a174D229E3cFA37253523E645A78A0C91B57"
 #   ]
 # }
-# 
+#
 # ------------Sending payload to bundler--------------
 #
 # {
@@ -185,14 +188,16 @@ $ ./bash/payload_builder.sh -a
 ```
 
 ### Deploy a standard 4337 Account on Sepolia
+
 Try modifying `contracts/bundler/NonStandardAccount.sol` then deploy the account and play with it. You may get some Sepolia eth on https://sepolia-faucet.pk910.de or https://sepoliafaucet.com/
 
 Hint:
 
-1. Comment out codes that will likely cause failure at Bundler's validation stage.  
-2. (Optional) The `_validateSignature` function of `NonStandardAccount.sol` isn't properly implemented yet, it doesn't do any signature check. Add a verification logic in the function so only wallet owner can use the account. 
+1. Comment out codes that will likely cause failure at Bundler's validation stage.
+2. (Optional) The `_validateSignature` function of `NonStandardAccount.sol` isn't properly implemented yet, it doesn't do any signature check. Add a verification logic in the function so only wallet owner can use the account.
 
-The following script will deploy 4337 account and automatically add deposit (0.01 ether) for it, make sure the deployer has enough funds.  
+The following script will deploy 4337 account and automatically add deposit (0.01 ether) for it, make sure the deployer has enough funds.
+
 ```bash
 $ export PRIVATE_KEY=${PRIVATE_KEY_OF_DEPLOYER}
 $ export ACCOUNT_OWNER_ADDR=${OWNER_ADDRESS_OF_ACCOUNT}
