@@ -18,7 +18,10 @@ library InitCodeLib {
         // (1) First 20 bytes of the init code should be the address of account factory.
         // (2) Right after the first 20 bytes, it should concat with function selector and arguments of the `createAccount` function on `SampleAccountFactory`.
         // (3) There are two useful abi utils: `abi.encodePacked` and `abi.encodeWithSelector`.
-        initCode = bytes("");
+        initCode = abi.encodePacked(
+            factory,
+            abi.encodeWithSelector(SampleAccountFactory.createAccount.selector, salt, owner)
+        );
     }
 }
 
