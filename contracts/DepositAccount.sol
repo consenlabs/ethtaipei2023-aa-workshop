@@ -23,7 +23,7 @@ contract DepositAccount is IAccount {
         //
         // HINT: There are two possible ways to achieve this goal:
         // (1) Send ETH directly to EntryPoint
-        // (2) Call `deposit` on EntryPoint
+        // (2) Call `depositTo` on EntryPoint
     }
 
     function execute(address target, uint256 value, bytes calldata data) external {
