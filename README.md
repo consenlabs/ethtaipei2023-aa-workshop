@@ -227,7 +227,6 @@ $ ./bash/payload_builder.sh -a
 #
 # ------------Sending payload to bundler--------------
 #
-# {"id":1,"jsonrpc":"2.0","result":"0xd9fb9b74014af5...."}
 # {
 #   "id": 1,
 #   "jsonrpc": "2.0",
