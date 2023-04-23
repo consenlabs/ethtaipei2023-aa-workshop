@@ -25,6 +25,9 @@ contract SignatureAccount is IAccount {
         uint256 missingAccountFunds
     ) external returns (uint256 validationData) {
         require(msg.sender == entryPoint, "SignatureAccount: Not from EntryPoint");
+        (bool success, ) = payable(entryPoint).call{ value: missingAccountFunds }("");
+        (success);
+
         // TODO: Implement this method to pass the tests in test/SignatureAccount.t.sol
         //
         // Account should verify `userOp.signature` against `userOpHash` to authorize executing the user operation.
@@ -34,8 +37,6 @@ contract SignatureAccount is IAccount {
         //
         // HINT: OpenZeppelin `ECDSA` library has a `tryRecover(hash, signature)` function to recover the signature signer.
 
-        (bool success, ) = payable(entryPoint).call{ value: missingAccountFunds }("");
-        (success);
         return SIG_VALIDATION_SUCCEEDED;
     }
 

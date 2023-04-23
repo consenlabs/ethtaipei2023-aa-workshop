@@ -43,7 +43,7 @@ contract SignatureAccountFactory {
         return
             Create2.computeAddress(
                 bytes32(salt),
-                keccak256(abi.encodePacked(type(SignatureAccount).creationCode, abi.encode(entryPoint), abi.encode(owner)))
+                keccak256(abi.encodePacked(type(SignatureAccount).creationCode, abi.encode(entryPoint, owner)))
             );
     }
 }
