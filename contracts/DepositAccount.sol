@@ -24,6 +24,7 @@ contract DepositAccount is IAccount {
         // HINT: There are two possible ways to achieve this goal:
         // (1) Send ETH directly to EntryPoint
         // (2) Call `depositTo` on EntryPoint
+        // Check out the EntryPoint contract: https://github.com/eth-infinitism/account-abstraction/blob/develop/contracts/core/EntryPoint.sol
     }
 
     function execute(address target, uint256 value, bytes calldata data) external {

@@ -11,17 +11,23 @@ contract SignatureAccount is IAccount {
     uint256 internal constant SIG_VALIDATION_SUCCEEDED = 0;
     uint256 internal constant SIG_VALIDATION_FAILED = 1;
 
+    address public entryPoint;
     address public owner;
 
-    constructor(address _owner) {
+    constructor(address _entryPoint, address _owner) {
+        entryPoint = _entryPoint;
         owner = _owner;
     }
 
     function validateUserOp(
         UserOperation calldata userOp,
         bytes32 userOpHash,
-        uint256 /* missingAccountFunds */
-    ) external view returns (uint256 validationData) {
+        uint256 missingAccountFunds
+    ) external returns (uint256 validationData) {
+        require(msg.sender == entryPoint, "SignatureAccount: Not from EntryPoint");
+        (bool success, ) = payable(entryPoint).call{ value: missingAccountFunds }("");
+        (success);
+
         // TODO: Implement this method to pass the tests in test/SignatureAccount.t.sol
         //
         // Account should verify `userOp.signature` against `userOpHash` to authorize executing the user operation.
@@ -35,6 +41,7 @@ contract SignatureAccount is IAccount {
     }
 
     function execute(address target, uint256 value, bytes calldata data) external {
+        require(msg.sender == entryPoint, "SignatureAccount: Unauthorized caller");
         (bool success, bytes memory result) = target.call{ value: value }(data);
         if (!success) {
             assembly {
