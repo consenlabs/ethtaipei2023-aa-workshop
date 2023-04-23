@@ -8,19 +8,18 @@ import { IAccount } from "aa/interfaces/IAccount.sol";
 contract NonStandardAccount is IAccount {
     uint256 internal constant SIG_VALIDATION_SUCCEEDED = 0;
     uint256 internal constant SIG_VALIDATION_FAILED = 1;
+    address constant WETH = 0xf531B8F309Be94191af87605CfBf600D71C2cFe0;
 
+    address public entryPoint;
     address public owner;
+    uint96 private counter;
 
-    constructor(address _owner) {
+    constructor(address _entryPoint, address _owner) {
+        entryPoint = _entryPoint;
         owner = _owner;
     }
 
     event bundlerTestCall(address associatedAddress, uint256 placeholder);
-
-    address constant WETH = 0xf531B8F309Be94191af87605CfBf600D71C2cFe0;
-    address constant entryPoint = 0x0576a174D229E3cFA37253523E645A78A0C91B57;
-
-    uint96 private counter;
 
     function callAndIncrementCounter() internal returns (uint96) {
         counter++;
@@ -30,7 +29,7 @@ contract NonStandardAccount is IAccount {
     function validateUserOp(
         UserOperation calldata /*userOp*/,
         bytes32 /* userOpHash */,
-        uint256 missingAccountFunds
+        uint256 /* missingAccountFunds */
     ) external override returns (uint256 validationData) {
         // Should fail
         uint256 lastBalance = address(this).balance;
@@ -48,10 +47,13 @@ contract NonStandardAccount is IAccount {
         uint256 selfStorageCall = callAndIncrementCounter();
         emit bundlerTestCall(address(this), selfStorageCall);
 
+        // Omit signature validation and paying EntryPoint
+
         return SIG_VALIDATION_SUCCEEDED;
     }
 
     function execute(address target, uint256 value, bytes calldata data) external {
+        require(msg.sender == entryPoint, "Unauthorized caller");
         (bool success, bytes memory result) = target.call{ value: value }(data);
         if (!success) {
             assembly {
@@ -59,6 +61,4 @@ contract NonStandardAccount is IAccount {
             }
         }
     }
-
-    receive() external payable {}
 }
