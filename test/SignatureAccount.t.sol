@@ -13,7 +13,7 @@ contract SignatureAccountTest is AATest {
     using WalletLib for Wallet;
 
     Wallet owner = WalletLib.createRandomWallet(vm);
-    address account = address(new SignatureAccount(owner.addr()));
+    address account = address(new SignatureAccount(address(entryPoint), owner.addr()));
 
     function setUp() public {
         entryPoint.depositTo{ value: 1 ether }(account);

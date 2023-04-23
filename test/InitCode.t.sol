@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import { UserOperation } from "aa/interfaces/UserOperation.sol";
 
-import { InitCodeLib, SampleAccount, SampleAccountFactory } from "contracts/InitCode.sol";
+import { InitCodeLib, SignatureAccount, SignatureAccountFactory } from "contracts/InitCode.sol";
 
 import { AATest } from "./utils/AATest.sol";
 import { Wallet, WalletLib } from "./utils/Wallet.sol";
@@ -11,7 +11,7 @@ import { Wallet, WalletLib } from "./utils/Wallet.sol";
 contract InitCodeTest is AATest {
     using WalletLib for Wallet;
 
-    SampleAccountFactory factory = new SampleAccountFactory();
+    SignatureAccountFactory factory = new SignatureAccountFactory(address(entryPoint));
     Wallet owner = WalletLib.createRandomWallet(vm);
 
     function testInitCode() public {
@@ -28,7 +28,7 @@ contract InitCodeTest is AATest {
         // Transfer 1 ether from account to recipient
         UserOperation memory userOp = createUserOp();
         userOp.sender = account;
-        userOp.callData = abi.encodeWithSelector(SampleAccount.execute.selector, recipient.addr(), 1 ether, bytes(""));
+        userOp.callData = abi.encodeWithSelector(SignatureAccount.execute.selector, recipient.addr(), 1 ether, bytes(""));
 
         // Setup init code to deploy account before transfer
         userOp.initCode = InitCodeLib.pack(address(factory), salt, owner.addr());
@@ -42,7 +42,7 @@ contract InitCodeTest is AATest {
 
         // Verify account is deployed properly
         assertGt(account.code.length, 0);
-        assertEq(SampleAccount(account).owner(), owner.addr());
+        assertEq(SignatureAccount(account).owner(), owner.addr());
 
         assertEq(recipient.balance(), 1 ether);
     }
