@@ -8,7 +8,7 @@ import "oz/utils/cryptography/ECDSA.sol";
 import "aa/interfaces/UserOperation.sol";
 import { IEntryPoint } from "aa/interfaces/IEntryPoint.sol";
 
-import { NonStandardAccount, INonStandardAccount } from "../../contracts/bundler/NonStandardAccount.sol";
+import { NonStandardAccount } from "../../contracts/bundler/NonStandardAccount.sol";
 
 import { AATest } from "../utils/AATest.sol";
 
@@ -26,16 +26,16 @@ contract BuildUserOp is AATest {
             callGasLimit: 43000,
             verificationGasLimit: 210000,
             preVerificationGas: 52000,
-            maxFeePerGas: 10 gwei,
+            maxFeePerGas: 15 gwei,
             maxPriorityFeePerGas: 1 gwei,
             paymasterAndData: bytes(""),
             signature: bytes("")
         });
 
     function testBundlerDemo() public {
-        // This userOp calldata sends 0.01 gwei of ether to burning address
+        // This userOp calldata sends 1 wei of ether to burning address
         address transferTo = 0x000000000000000000000000000000000000dEaD;
-        uint256 transferAmount = 0.01 gwei;
+        uint256 transferAmount = 1 wei;
         bytes memory userOpCalldata = abi.encodeWithSignature(
             "execute(address,uint256,bytes)",
             transferTo,
@@ -44,11 +44,9 @@ contract BuildUserOp is AATest {
         );
         userOpTemplate.sender = account;
         userOpTemplate.callData = userOpCalldata;
-        userOpTemplate.nonce = INonStandardAccount(account).nonce();
 
         // Sign the userOp data
         bytes32 userOpHash = getUserOpHash(userOpTemplate, entryPointAddr);
-
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(vm.envUint("PRIVATE_KEY"), ECDSA.toEthSignedMessageHash(userOpHash));
         userOpTemplate.signature = abi.encodePacked(r, s, v);
 

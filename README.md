@@ -2,6 +2,13 @@
 
 [ERC-4337](https://eips.ethereum.org/EIPS/eip-4337) account abstraction workshop for ETH Taipei 2023.
 
+## Slides
+
+-   [Account Abstraction & ERC-4337](https://www.canva.com/design/DAFf5HAyHdA/aE72J5rZKlbPKoF1rIpWbQ/edit) by [@Alfred](https://github.com/ChiHaoLu)
+-   [ERC-4337: Payment, Validation and Deployment](https://docs.google.com/presentation/d/1EF2JaSPBi3qqT6dEGge0xcAsEjSI50jXylkxEorFuso/edit?usp=sharing) by [@Nic](https://github.com/NIC619)
+-   [ERC-4337: Limitations on Bundler](https://docs.google.com/presentation/d/1776RAo1QUwsU9pjbQW3t0IFyW7HorNCDTy9GDWkApFk/edit?usp=sharing) by [@David](https://github.com/108356037)
+-   [ERC-4337: Debugging Tips](https://docs.google.com/presentation/d/1aGIUsOETs3nvb_Et_Q2CTmuQDpN0d_M0iXx6ovnGVWw/edit?usp=sharing) by [@Nic](https://github.com/NIC619)
+
 ## Environment
 
 -   Foundry ([installation](https://book.getfoundry.sh/getting-started/installation))
@@ -94,55 +101,23 @@ Running 1 test for test/InitCode.t.sol:InitCodeTest
 
 ## Bundler Demo
 
-### Deploy 4337 Account on Goerli
-
-```bash
-$ export PRIVATE_KEY=${PRIVATE_KEY_OF_DEPLOYER}
-$ export ACCOUNT_OWNER_ADDR=${OWNER_ADDRESS_OF_ACCOUNT}
-$ export RPC_URL=${GOERLI_RPC_ENDPOINT}
-
-# Run command at project root:
-$ forge script ./script/bundler/DeployAccount.s.sol --rpc-url ${RPC_URL} --broadcast
-```
-
-Write down the deployed account address at this step, we will need it when generating userOp.
-
-### Generate UserOp payload for bundler
-
 _(prerequisite: environment needs python3 installed to run below script)_
 
-```bash
-# The private key here corresponds to the account owner address
-$ export PRIVATE_KEY=${PRIVATE_KEY_FOR_SIGNING_USER_OP}
-$ export RPC_URL=${GOERLI_RPC_ENDPOINT}
-$ export ACCOUNT_ADDR=${4337_ACCOUNT_ADDRESS}
+For this demo, we will interact with three pre-deployed 4337 accounts on Sepolia testnet:
 
-# Run command at project root:
-$ ./bash/payload_builder.sh
+1. `0x9F40AeA5c5E153eC69De85641561860f24dC85E6` (Account accessing BANNED OPCODE)
+2. `0x5AB93E8d529Cae627F33Ab4d30EFD5fD611e778e` (Account accessing invalid Storage Slot)
+3. `0x9865B0fB2a2F71A434AfdAa50dfF1A0e6c2F353d` (Account that does not violate anything)
 
-# Expected output:
-#
-# Generating userOperation...
-# Building userOp http payload for bundler...
+### Interacting with Account using BANNED OPCODE
 
-# ------------Result Payload--------------
-#
-# {"jsonrpc": "2.0", "id": 1, "method": "eth_sendUserOperation",
-#  "params": [{"sender": "0xF19518B9424D8B0444b09E5B4631E728367caC20", "nonce": "2", "initCode": "0x",
-#  "callData": ...}
-# ...
-```
-
-### Generate UserOp payload and send to bundler
-
-_(prerequisite: environment needs python3 installed to run below script)_
+The bundler should reject our request since we are calling a banned opcode in this account.
 
 ```bash
-# The private key here corresponds to the account owner address
-$ export PRIVATE_KEY=${PRIVATE_KEY_FOR_SIGNING_USER_OP}
-$ export RPC_URL=${GOERLI_RPC_ENDPOINT}
-$ export ACCOUNT_ADDR=${4337_ACCOUNT_ADDRESS}
-$ export BUNDLER_URL=${BUNDLER_ENDPOINT} # may use stackup free endpoint here
+$ export PRIVATE_KEY=$RANDOM
+$ export ACCOUNT_ADDR=0x9F40AeA5c5E153eC69De85641561860f24dC85E6
+$ export RPC_URL=${SEPOLIA_ENDPOINT}
+$ export BUNDLER_URL=${BUNDLER_ENDPOINT}
 
 # Run command at project root:
 $ ./bash/payload_builder.sh -a
@@ -151,13 +126,134 @@ $ ./bash/payload_builder.sh -a
 #
 # Generating userOperation...
 # Building userOp http payload for bundler...
+#
+# ------------Result Payload--------------
+#
+# {
+#   "jsonrpc": "2.0",
+#   "id": 1,
+#   "method": "eth_sendUserOperation",
+#   "params": [
+#    ...
+#     },
+#     "0x0576a174D229E3cFA37253523E645A78A0C91B57"
+#   ]
+# }
+#
+# ------------Sending payload to bundler--------------
+#
+# {
+#   "error": {
+#     "code": -32502,
+#     "data": "account uses banned opcode: SELFBALANCE",
+#     "message": "account uses banned opcode: SELFBALANCE"
+#   },
+#   "id": 1,
+#   "jsonrpc": "2.0"
+# }
+```
 
+### Interacting with Account accessing invalid Storage Slot
+
+The bundler should reject our request since we are not accessing the valid storage slot.
+
+```bash
+$ export PRIVATE_KEY=$RANDOM
+$ export ACCOUNT_ADDR=0x5AB93E8d529Cae627F33Ab4d30EFD5fD611e778e
+$ export RPC_URL=${SEPOLIA_ENDPOINT}
+$ export BUNDLER_URL=${BUNDLER_ENDPOINT}
+
+# Run command at project root:
+$ ./bash/payload_builder.sh -a
+
+# Expected output:
+#
+# Generating userOperation...
+# Building userOp http payload for bundler...
+#
+# ------------Result Payload--------------
+#
+# {
+#   "jsonrpc": "2.0",
+#   "id": 1,
+#   "method": "eth_sendUserOperation",
+#   "params": [
+#    ...
+#     },
+#     "0x0576a174D229E3cFA37253523E645A78A0C91B57"
+#   ]
+# }
+#
+# ------------Sending payload to bundler--------------
+#
+# {
+#   "error": {
+#     "code": -32502,
+#     "data": "account has forbidden read to 0x87224F6D41DF6044ddd30a87bBdEeBc8c8CAc4f0 slot 4dbb180290de92ae0711e87110c97f6daba9f11cdfc121096b461bdc56cfe39f",
+#     "message": "account has forbidden read to 0x87224F6D41DF6044ddd30a87bBdEeBc8c8CAc4f0 slot 4dbb180290de92ae0711e87110c97f6daba9f11cdfc121096b461bdc56cfe39f"
+#   },
+#   "id": 1,
+#   "jsonrpc": "2.0"
+# }
+```
+
+### Interacting with a standard valid Account
+
+The bundler should accept our request since this account doesn't violate any rule. Bundler will return the `userOpHash` if request accepted.
+
+```bash
+$ export PRIVATE_KEY=$RANDOM
+$ export ACCOUNT_ADDR=0x9865B0fB2a2F71A434AfdAa50dfF1A0e6c2F353d
+$ export RPC_URL=${SEPOLIA_ENDPOINT}
+$ export BUNDLER_URL=${BUNDLER_ENDPOINT}
+
+# Run command at project root:
+$ ./bash/payload_builder.sh -a
+# Expected output:
+#
+#
+# Generating userOperation...
+# Building userOp http payload for bundler...
+#
 # ------------Result Payload--------------
 #
 # {"jsonrpc": "2.0", "id": 1, "method":eth_sendUserOperation
 # ...}
 #
+#
+# {
+#   "jsonrpc": "2.0",
+#   "id": 1,
+#   "method": "eth_sendUserOperation",
+#   "params": [
+#    ...
+#     },
+#     "0x0576a174D229E3cFA37253523E645A78A0C91B57"
+#   ]
+# }
+#
 # ------------Sending payload to bundler--------------
 #
-# {"id":1,"jsonrpc":"2.0","result":"0xd9fb9b74014af5...."}
+# {
+#   "id": 1,
+#   "jsonrpc": "2.0",
+#   "result": "0x744a21e2b6eaaa59c9481c9b3d9f99e0968dffece71df3dfb55bad4a8d4353cf"
+# }
+```
+
+---
+
+## Deploy a standard 4337 Account on Sepolia
+
+The following script will deploy a `SimpleAccountFactory` and use the factory to create a `SimpleAccount`(`SimpleAccountFactory` & `SimpleAccount` are both from officical sample code).
+
+```bash
+# Make sure account owner address is under your control,
+# you will need its private key to sign userOp
+$ export ACCOUNT_OWNER_ADDR=${OWNER_ADDRESS_OF_ACCOUNT}
+$ export PRIVATE_KEY=${PRIVATE_KEY_OF_DEPLOYER}
+$ export RPC_URL=${SEPOLIA_ENDPOINT}
+
+# Run command at project root:
+$ forge script ./script/bundler/DeploySimpleAccount.s.sol --tc Deploy --rpc-url $RPC_URL --broadcast
 ```
