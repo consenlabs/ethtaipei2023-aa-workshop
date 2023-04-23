@@ -98,9 +98,9 @@ _(prerequisite: environment needs python3 installed to run below script)_
 
 For this demo, we will interact with three pre-deployed 4337 accounts on Sepolia testnet:
 
-1. `0x9F40AeA5c5E153eC69De85641561860f24dC85E6` (Account accessing BANNED OPCODE)
-2. `0x5AB93E8d529Cae627F33Ab4d30EFD5fD611e778e` (Account accessing invalid Storage Slot)
-3. `0x9865B0fB2a2F71A434AfdAa50dfF1A0e6c2F353d` (Account that does not violate anything)
+1. `0xbF975Ba9ad5c242730435c9C133AedAE4B942dfa` (Account accessing BANNED OPCODE)
+2. `0x1046E6729cb6926a76364387fA24aA8551527AFC` (Account accessing invalid Storage Slot)
+3. `0xcbd1f8E195007Fbf0400c644E3593CB3afE6930E` (Account that does not violate anything)
 
 ### Interacting with Account using BANNED OPCODE
 
@@ -108,7 +108,7 @@ The bundler should reject our request since we are calling a banned opcode in th
 
 ```bash
 $ export PRIVATE_KEY=$RANDOM
-$ export ACCOUNT_ADDR=0x9F40AeA5c5E153eC69De85641561860f24dC85E6
+$ export ACCOUNT_ADDR=0xbF975Ba9ad5c242730435c9C133AedAE4B942dfa
 $ export RPC_URL=${SEPOLIA_ENDPOINT}
 $ export BUNDLER_URL=${BUNDLER_ENDPOINT}
 
@@ -152,7 +152,7 @@ The bundler should reject our request since we are not accessing the valid stora
 
 ```bash
 $ export PRIVATE_KEY=$RANDOM
-$ export ACCOUNT_ADDR=0x5AB93E8d529Cae627F33Ab4d30EFD5fD611e778e
+$ export ACCOUNT_ADDR=0x1046E6729cb6926a76364387fA24aA8551527AFC
 $ export RPC_URL=${SEPOLIA_ENDPOINT}
 $ export BUNDLER_URL=${BUNDLER_ENDPOINT}
 
@@ -196,7 +196,7 @@ The bundler should accept our request since this account doesn't violate any rul
 
 ```bash
 $ export PRIVATE_KEY=$RANDOM
-$ export ACCOUNT_ADDR=0x9865B0fB2a2F71A434AfdAa50dfF1A0e6c2F353d
+$ export ACCOUNT_ADDR=0xcbd1f8E195007Fbf0400c644E3593CB3afE6930E
 $ export RPC_URL=${SEPOLIA_ENDPOINT}
 $ export BUNDLER_URL=${BUNDLER_ENDPOINT}
 
