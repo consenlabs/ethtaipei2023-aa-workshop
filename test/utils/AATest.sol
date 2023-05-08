@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 import { EntryPoint } from "aa/core/EntryPoint.sol";
+import { IEntryPoint } from "aa/interfaces/IEntryPoint.sol";
 import { UserOperation, UserOperationLib } from "aa/interfaces/UserOperation.sol";
 
 import { Test } from "forge-std/Test.sol";
@@ -30,6 +31,17 @@ abstract contract AATest is Test {
                 paymasterAndData: bytes(""),
                 signature: bytes("")
             });
+    }
+
+    function handleUserOp(UserOperation memory userOp) internal {
+        UserOperation[] memory ops = new UserOperation[](1);
+        ops[0] = userOp;
+
+        entryPoint.handleOps(ops, payable(msg.sender));
+    }
+
+    function expectRevertFailedOp(string memory reason) internal {
+        vm.expectRevert(abi.encodeWithSelector(IEntryPoint.FailedOp.selector, 0, reason));
     }
 
     function signUserOp(Wallet memory signer, UserOperation memory userOp) internal view {
