@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: MIT
-/* solhint-disable no-inline-assembly */
 pragma solidity 0.8.17;
 
 import { IAccount } from "aa/interfaces/IAccount.sol";

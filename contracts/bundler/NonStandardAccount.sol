@@ -1,14 +1,15 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.17;
 
-import "oz/token/ERC20/IERC20.sol";
 import { UserOperation } from "aa/interfaces/UserOperation.sol";
 import { IAccount } from "aa/interfaces/IAccount.sol";
+
+import { IERC20 } from "oz/token/ERC20/IERC20.sol";
 
 contract NonStandardAccount is IAccount {
     uint256 internal constant SIG_VALIDATION_SUCCEEDED = 0;
     uint256 internal constant SIG_VALIDATION_FAILED = 1;
-    address constant WETH = 0xf531B8F309Be94191af87605CfBf600D71C2cFe0;
+    address internal constant WETH = 0xf531B8F309Be94191af87605CfBf600D71C2cFe0;
 
     address public entryPoint;
     address public owner;
@@ -19,7 +20,7 @@ contract NonStandardAccount is IAccount {
         owner = _owner;
     }
 
-    event bundlerTestCall(address associatedAddress, uint256 placeholder);
+    event BundlerTestCall(address associatedAddress, uint256 placeholder);
 
     function callAndIncrementCounter() internal returns (uint96) {
         counter++;
@@ -33,19 +34,19 @@ contract NonStandardAccount is IAccount {
     ) external override returns (uint256 validationData) {
         // Should fail
         uint256 lastBalance = address(this).balance;
-        emit bundlerTestCall(address(this), lastBalance);
+        emit BundlerTestCall(address(this), lastBalance);
 
         // Should fail
         uint256 nonSelfStorageERC20Call = IERC20(WETH).balanceOf(entryPoint);
-        emit bundlerTestCall(entryPoint, nonSelfStorageERC20Call);
+        emit BundlerTestCall(entryPoint, nonSelfStorageERC20Call);
 
         // Should pass
         uint256 selfStorageERC20Call = IERC20(WETH).balanceOf(address(this));
-        emit bundlerTestCall(address(this), selfStorageERC20Call);
+        emit BundlerTestCall(address(this), selfStorageERC20Call);
 
         // Should pass
         uint256 selfStorageCall = callAndIncrementCounter();
-        emit bundlerTestCall(address(this), selfStorageCall);
+        emit BundlerTestCall(address(this), selfStorageCall);
 
         // Omit signature validation and paying EntryPoint
 

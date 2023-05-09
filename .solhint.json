@@ -3,6 +3,10 @@
   "plugins": ["prettier"],
   "rules": {
     "compiler-version": ["error", ">=0.8.0"],
-    "func-visibility": ["warn", { "ignoreConstructors": true }]
+    "func-visibility": ["warn", { "ignoreConstructors": true }],
+    "no-empty-blocks": "off",
+    "no-inline-assembly": "off",
+    "no-unused-vars": "off",
+    "reason-string": ["off"]
   }
 }
