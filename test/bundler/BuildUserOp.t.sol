@@ -13,7 +13,8 @@ import { NonStandardAccount } from "../../contracts/bundler/NonStandardAccount.s
 import { AATest } from "../utils/AATest.sol";
 
 contract BuildUserOp is AATest {
-    address immutable entryPointAddr = 0x0576a174D229E3cFA37253523E645A78A0C91B57;
+    address immutable entryPointAddr =
+        0x0576a174D229E3cFA37253523E645A78A0C91B57;
     address account = vm.envAddress("ACCOUNT_ADDR");
 
     // Signature does not matter here since we will truncate it when signing
@@ -47,7 +48,10 @@ contract BuildUserOp is AATest {
 
         // Sign the userOp data
         bytes32 userOpHash = getUserOpHash(userOpTemplate, entryPointAddr);
-        (uint8 v, bytes32 r, bytes32 s) = vm.sign(vm.envUint("PRIVATE_KEY"), ECDSA.toEthSignedMessageHash(userOpHash));
+        (uint8 v, bytes32 r, bytes32 s) = vm.sign(
+            vm.envUint("PRIVATE_KEY"),
+            ECDSA.toEthSignedMessageHash(userOpHash)
+        );
         userOpTemplate.signature = abi.encodePacked(r, s, v);
 
         // Call userOp from entryPoint contract

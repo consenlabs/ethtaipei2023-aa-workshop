@@ -11,7 +11,11 @@ contract VoidAccount is IAccount {
         uint256 /* missingAccountFunds */
     ) external pure returns (uint256) {}
 
-    function execute(address target, uint256 value, bytes calldata data) external {
+    function execute(
+        address target,
+        uint256 value,
+        bytes calldata data
+    ) external {
         (bool success, bytes memory result) = target.call{ value: value }(data);
         if (!success) {
             assembly {

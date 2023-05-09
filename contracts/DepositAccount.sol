@@ -26,7 +26,11 @@ contract DepositAccount is IAccount {
         // Check out the EntryPoint contract: https://github.com/eth-infinitism/account-abstraction/blob/develop/contracts/core/EntryPoint.sol
     }
 
-    function execute(address target, uint256 value, bytes calldata data) external {
+    function execute(
+        address target,
+        uint256 value,
+        bytes calldata data
+    ) external {
         (bool success, bytes memory result) = target.call{ value: value }(data);
         if (!success) {
             assembly {

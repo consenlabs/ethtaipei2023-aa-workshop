@@ -13,7 +13,8 @@ contract SignatureAccountTest is AATest {
     using WalletLib for Wallet;
 
     Wallet owner = WalletLib.createRandomWallet(vm);
-    address account = address(new SignatureAccount(address(entryPoint), owner.addr()));
+    address account =
+        address(new SignatureAccount(address(entryPoint), owner.addr()));
 
     function setUp() public {
         entryPoint.depositTo{ value: 1 ether }(account);
@@ -26,13 +27,24 @@ contract SignatureAccountTest is AATest {
         // Transfer 1 ether from account signed by other
         UserOperation memory userOp = createUserOp();
         userOp.sender = account;
-        userOp.callData = abi.encodeWithSelector(SignatureAccount.execute.selector, other.addr(), 1 ether, bytes(""));
+        userOp.callData = abi.encodeWithSelector(
+            SignatureAccount.execute.selector,
+            other.addr(),
+            1 ether,
+            bytes("")
+        );
         signUserOp(other, userOp);
 
         UserOperation[] memory userOps = new UserOperation[](1);
         userOps[0] = userOp;
 
-        vm.expectRevert(abi.encodeWithSelector(IEntryPoint.FailedOp.selector, 0, "AA24 signature error"));
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                IEntryPoint.FailedOp.selector,
+                0,
+                "AA24 signature error"
+            )
+        );
         entryPoint.handleOps(userOps, payable(msg.sender));
     }
 

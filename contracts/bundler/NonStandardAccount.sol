@@ -53,7 +53,11 @@ contract NonStandardAccount is IAccount {
         return SIG_VALIDATION_SUCCEEDED;
     }
 
-    function execute(address target, uint256 value, bytes calldata data) external {
+    function execute(
+        address target,
+        uint256 value,
+        bytes calldata data
+    ) external {
         require(msg.sender == entryPoint, "Unauthorized caller");
         (bool success, bytes memory result) = target.call{ value: value }(data);
         if (!success) {

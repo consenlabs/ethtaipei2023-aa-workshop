@@ -41,24 +41,37 @@ abstract contract AATest is Test {
     }
 
     function expectRevertFailedOp(string memory reason) internal {
-        vm.expectRevert(abi.encodeWithSelector(IEntryPoint.FailedOp.selector, 0, reason));
+        vm.expectRevert(
+            abi.encodeWithSelector(IEntryPoint.FailedOp.selector, 0, reason)
+        );
     }
 
-    function signUserOp(Wallet memory signer, UserOperation memory userOp) internal view {
+    function signUserOp(
+        Wallet memory signer,
+        UserOperation memory userOp
+    ) internal view {
         bytes32 userOpHash = getUserOpHash(userOp);
         (uint8 v, bytes32 r, bytes32 s) = signer.sign(userOpHash);
         userOp.signature = abi.encodePacked(r, s, v);
     }
 
-    function getUserOpHash(UserOperation memory userOp, address entrypoint) internal view returns (bytes32) {
+    function getUserOpHash(
+        UserOperation memory userOp,
+        address entrypoint
+    ) internal view returns (bytes32) {
         return this._getUserOpHash(userOp, entrypoint);
     }
 
-    function getUserOpHash(UserOperation memory userOp) internal view returns (bytes32) {
+    function getUserOpHash(
+        UserOperation memory userOp
+    ) internal view returns (bytes32) {
         return this._getUserOpHash(userOp, address(entryPoint));
     }
 
-    function _getUserOpHash(UserOperation calldata userOp, address entrypoint) public view returns (bytes32) {
+    function _getUserOpHash(
+        UserOperation calldata userOp,
+        address entrypoint
+    ) public view returns (bytes32) {
         return keccak256(abi.encode(userOp.hash(), entrypoint, block.chainid));
     }
 

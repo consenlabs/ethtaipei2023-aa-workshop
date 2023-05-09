@@ -27,24 +27,34 @@ contract TokenPaymasterTest is AATest, ITokenPaymasterEvent {
     function testCheckBalance() public {
         UserOperation memory userOp = createUserOp();
         userOp.sender = account;
-        userOp.paymasterAndData = abi.encodePacked(paymaster, abi.encode(address(token)));
+        userOp.paymasterAndData = abi.encodePacked(
+            paymaster,
+            abi.encode(address(token))
+        );
 
-        expectRevertFailedOp("AA33 reverted: Sender has insufficient token balance");
+        expectRevertFailedOp(
+            "AA33 reverted: Sender has insufficient token balance"
+        );
         handleUserOp(userOp);
     }
 
     function testCollectToken() public {
         UserOperation memory userOp = createUserOp();
 
-        uint256 maxCost = (userOp.callGasLimit + userOp.verificationGasLimit * 3 + userOp.preVerificationGas) *
-            userOp.maxFeePerGas;
+        uint256 maxCost = (userOp.callGasLimit +
+            userOp.verificationGasLimit *
+            3 +
+            userOp.preVerificationGas) * userOp.maxFeePerGas;
 
         token.mint(account, maxCost);
         vm.prank(account);
         token.approve(paymaster, maxCost);
 
         userOp.sender = account;
-        userOp.paymasterAndData = abi.encodePacked(paymaster, abi.encode(address(token)));
+        userOp.paymasterAndData = abi.encodePacked(
+            paymaster,
+            abi.encode(address(token))
+        );
 
         vm.recordLogs();
         handleUserOp(userOp);

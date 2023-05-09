@@ -35,8 +35,15 @@ contract TokenPaymaster is IPaymaster, ITokenPaymasterEvent {
         return (abi.encode(userOp.sender, token), 0);
     }
 
-    function postOp(PostOpMode /* mode */, bytes calldata context, uint256 actualGasCost) external {
-        (address sender, address token) = abi.decode(context, (address, address));
+    function postOp(
+        PostOpMode /* mode */,
+        bytes calldata context,
+        uint256 actualGasCost
+    ) external {
+        (address sender, address token) = abi.decode(
+            context,
+            (address, address)
+        );
 
         // TODO: Implement this method to pass the tests in test/TokenPaymaster.t.sol
         //

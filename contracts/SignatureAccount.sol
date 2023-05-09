@@ -23,8 +23,13 @@ contract SignatureAccount is IAccount {
         bytes32 userOpHash,
         uint256 missingAccountFunds
     ) external returns (uint256 validationData) {
-        require(msg.sender == entryPoint, "SignatureAccount: Not from EntryPoint");
-        (bool success, ) = payable(entryPoint).call{ value: missingAccountFunds }("");
+        require(
+            msg.sender == entryPoint,
+            "SignatureAccount: Not from EntryPoint"
+        );
+        (bool success, ) = payable(entryPoint).call{
+            value: missingAccountFunds
+        }("");
         (success);
 
         // TODO: Implement this method to pass the tests in test/SignatureAccount.t.sol
@@ -39,8 +44,15 @@ contract SignatureAccount is IAccount {
         return SIG_VALIDATION_SUCCEEDED;
     }
 
-    function execute(address target, uint256 value, bytes calldata data) external {
-        require(msg.sender == entryPoint, "SignatureAccount: Unauthorized caller");
+    function execute(
+        address target,
+        uint256 value,
+        bytes calldata data
+    ) external {
+        require(
+            msg.sender == entryPoint,
+            "SignatureAccount: Unauthorized caller"
+        );
         (bool success, bytes memory result) = target.call{ value: value }(data);
         if (!success) {
             assembly {

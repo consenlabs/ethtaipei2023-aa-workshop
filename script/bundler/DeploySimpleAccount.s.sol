@@ -32,7 +32,10 @@ contract SimpleAccount is BaseAccount, UUPSUpgradeable, Initializable {
 
     IEntryPoint private immutable _entryPoint;
 
-    event SimpleAccountInitialized(IEntryPoint indexed entryPoint, address indexed owner);
+    event SimpleAccountInitialized(
+        IEntryPoint indexed entryPoint,
+        address indexed owner
+    );
 
     modifier onlyOwner() {
         _onlyOwner();
@@ -59,13 +62,20 @@ contract SimpleAccount is BaseAccount, UUPSUpgradeable, Initializable {
 
     function _onlyOwner() internal view {
         //directly from EOA owner, or through the account itself (which gets redirected through execute())
-        require(msg.sender == owner || msg.sender == address(this), "only owner");
+        require(
+            msg.sender == owner || msg.sender == address(this),
+            "only owner"
+        );
     }
 
     /**
      * execute a transaction (called directly from owner, or by entryPoint)
      */
-    function execute(address dest, uint256 value, bytes calldata func) external {
+    function execute(
+        address dest,
+        uint256 value,
+        bytes calldata func
+    ) external {
         _requireFromEntryPointOrOwner();
         _call(dest, value, func);
     }
@@ -73,7 +83,10 @@ contract SimpleAccount is BaseAccount, UUPSUpgradeable, Initializable {
     /**
      * execute a sequence of transactions
      */
-    function executeBatch(address[] calldata dest, bytes[] calldata func) external {
+    function executeBatch(
+        address[] calldata dest,
+        bytes[] calldata func
+    ) external {
         _requireFromEntryPointOrOwner();
         require(dest.length == func.length, "wrong array lengths");
         for (uint256 i = 0; i < dest.length; i++) {
@@ -97,11 +110,16 @@ contract SimpleAccount is BaseAccount, UUPSUpgradeable, Initializable {
 
     // Require the function call went through EntryPoint or owner
     function _requireFromEntryPointOrOwner() internal view {
-        require(msg.sender == address(entryPoint()) || msg.sender == owner, "account: not Owner or EntryPoint");
+        require(
+            msg.sender == address(entryPoint()) || msg.sender == owner,
+            "account: not Owner or EntryPoint"
+        );
     }
 
     /// implement template method of BaseAccount
-    function _validateAndUpdateNonce(UserOperation calldata userOp) internal override {
+    function _validateAndUpdateNonce(
+        UserOperation calldata userOp
+    ) internal override {
         require(_nonce++ == userOp.nonce, "account: invalid nonce");
     }
 
@@ -111,7 +129,8 @@ contract SimpleAccount is BaseAccount, UUPSUpgradeable, Initializable {
         bytes32 userOpHash
     ) internal virtual override returns (uint256 validationData) {
         bytes32 hash = userOpHash.toEthSignedMessageHash();
-        if (owner != hash.recover(userOp.signature)) return SIG_VALIDATION_FAILED;
+        if (owner != hash.recover(userOp.signature))
+            return SIG_VALIDATION_FAILED;
         return 0;
     }
 
@@ -143,11 +162,16 @@ contract SimpleAccount is BaseAccount, UUPSUpgradeable, Initializable {
      * @param withdrawAddress target to send to
      * @param amount to withdraw
      */
-    function withdrawDepositTo(address payable withdrawAddress, uint256 amount) public onlyOwner {
+    function withdrawDepositTo(
+        address payable withdrawAddress,
+        uint256 amount
+    ) public onlyOwner {
         entryPoint().withdrawTo(withdrawAddress, amount);
     }
 
-    function _authorizeUpgrade(address newImplementation) internal view override {
+    function _authorizeUpgrade(
+        address newImplementation
+    ) internal view override {
         (newImplementation);
         _onlyOwner();
     }
@@ -172,7 +196,10 @@ contract SimpleAccountFactory {
      * Note that during UserOperation execution, this method is called only if the account is not deployed.
      * This method returns an existing account address so that entryPoint.getSenderAddress() would work even after account creation
      */
-    function createAccount(address owner, uint256 salt) public returns (SimpleAccount ret) {
+    function createAccount(
+        address owner,
+        uint256 salt
+    ) public returns (SimpleAccount ret) {
         address addr = getAddress(owner, salt);
         uint codeSize = addr.code.length;
         if (codeSize > 0) {
@@ -191,14 +218,20 @@ contract SimpleAccountFactory {
     /**
      * calculate the counterfactual address of this account as it would be returned by createAccount()
      */
-    function getAddress(address owner, uint256 salt) public view returns (address) {
+    function getAddress(
+        address owner,
+        uint256 salt
+    ) public view returns (address) {
         return
             Create2.computeAddress(
                 bytes32(salt),
                 keccak256(
                     abi.encodePacked(
                         type(ERC1967Proxy).creationCode,
-                        abi.encode(address(accountImplementation), abi.encodeCall(SimpleAccount.initialize, (owner)))
+                        abi.encode(
+                            address(accountImplementation),
+                            abi.encodeCall(SimpleAccount.initialize, (owner))
+                        )
                     )
                 )
             );
@@ -206,7 +239,10 @@ contract SimpleAccountFactory {
 }
 
 interface ISimpleAccountFactory {
-    function createAccount(address owner, uint256 salt) external returns (SimpleAccount);
+    function createAccount(
+        address owner,
+        uint256 salt
+    ) external returns (SimpleAccount);
 
     function getAddress(address owner, uint256 salt) external returns (address);
 }
@@ -224,12 +260,15 @@ contract Deploy is Script {
     function run() public {
         vm.startBroadcast(deployer);
 
-        SimpleAccountFactory factory = new SimpleAccountFactory(IEntryPoint(entryPoint));
+        SimpleAccountFactory factory = new SimpleAccountFactory(
+            IEntryPoint(entryPoint)
+        );
         ISimpleAccountFactory(address(factory)).createAccount(ownerAccount, 0);
 
         vm.stopBroadcast();
 
-        address accountAddr = ISimpleAccountFactory(address(factory)).getAddress(ownerAccount, 0);
+        address accountAddr = ISimpleAccountFactory(address(factory))
+            .getAddress(ownerAccount, 0);
 
         console.log("Deployed account factory address:", address(factory));
         console.log("Deployed account address:", accountAddr);

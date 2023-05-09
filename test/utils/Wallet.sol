@@ -18,7 +18,9 @@ library WalletLib {
         inputs[2] = "new";
 
         bytes memory res = vm.ffi(inputs);
-        uint256 privateKey = uint256(bytes32(BytesLib.slice(res, res.length - 64, 64)));
+        uint256 privateKey = uint256(
+            bytes32(BytesLib.slice(res, res.length - 64, 64))
+        );
 
         return Wallet(vm, privateKey);
     }
@@ -31,13 +33,20 @@ library WalletLib {
         return w.addr().balance;
     }
 
-    function sign(Wallet memory w, bytes32 digest) internal pure returns (uint8 v, bytes32 r, bytes32 s) {
+    function sign(
+        Wallet memory w,
+        bytes32 digest
+    ) internal pure returns (uint8 v, bytes32 r, bytes32 s) {
         return w.vm.sign(w.privateKey, digest);
     }
 }
 
 library BytesLib {
-    function slice(bytes memory _bytes, uint256 _start, uint256 _length) internal pure returns (bytes memory) {
+    function slice(
+        bytes memory _bytes,
+        uint256 _start,
+        uint256 _length
+    ) internal pure returns (bytes memory) {
         require(_length + 31 >= _length, "slice_overflow");
         require(_bytes.length >= _start + _length, "slice_outOfBounds");
 
@@ -64,13 +73,22 @@ library BytesLib {
                 // because when slicing multiples of 32 bytes (lengthmod == 0)
                 // the following copy loop was copying the origin's length
                 // and then ending prematurely not copying everything it should.
-                let mc := add(add(tempBytes, lengthmod), mul(0x20, iszero(lengthmod)))
+                let mc := add(
+                    add(tempBytes, lengthmod),
+                    mul(0x20, iszero(lengthmod))
+                )
                 let end := add(mc, _length)
 
                 for {
                     // The multiplication in the next line has the same exact purpose
                     // as the one above.
-                    let cc := add(add(add(_bytes, lengthmod), mul(0x20, iszero(lengthmod))), _start)
+                    let cc := add(
+                        add(
+                            add(_bytes, lengthmod),
+                            mul(0x20, iszero(lengthmod))
+                        ),
+                        _start
+                    )
                 } lt(mc, end) {
                     mc := add(mc, 0x20)
                     cc := add(cc, 0x20)

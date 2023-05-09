@@ -20,7 +20,10 @@ contract Deploy is Script {
     function run() public {
         vm.startBroadcast(deployer);
 
-        NonStandardAccount account = new NonStandardAccount(entryPoint, ownerAccount);
+        NonStandardAccount account = new NonStandardAccount(
+            entryPoint,
+            ownerAccount
+        );
         console.log("Deployed account address:", address(account));
 
         (bool success, ) = entryPoint.call{ value: 0.01 ether }(

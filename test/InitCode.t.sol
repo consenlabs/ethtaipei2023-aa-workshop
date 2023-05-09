@@ -11,7 +11,8 @@ import { Wallet, WalletLib } from "./utils/Wallet.sol";
 contract InitCodeTest is AATest {
     using WalletLib for Wallet;
 
-    SignatureAccountFactory factory = new SignatureAccountFactory(address(entryPoint));
+    SignatureAccountFactory factory =
+        new SignatureAccountFactory(address(entryPoint));
     Wallet owner = WalletLib.createRandomWallet(vm);
 
     function testInitCode() public {
@@ -36,7 +37,11 @@ contract InitCodeTest is AATest {
         );
 
         // Setup init code to deploy account before transfer
-        userOp.initCode = InitCodeLib.pack(address(factory), salt, owner.addr());
+        userOp.initCode = InitCodeLib.pack(
+            address(factory),
+            salt,
+            owner.addr()
+        );
 
         signUserOp(owner, userOp);
 

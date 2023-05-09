@@ -9,7 +9,11 @@ import { Create2 } from "oz/utils/Create2.sol";
 import { SignatureAccount } from "./SignatureAccount.sol";
 
 library InitCodeLib {
-    function pack(address factory, uint256 salt, address owner) internal pure returns (bytes memory initCode) {
+    function pack(
+        address factory,
+        uint256 salt,
+        address owner
+    ) internal pure returns (bytes memory initCode) {
         // TODO: Implement this method to pass the tests in test/InitCode.t.sol
         //
         // With account factory, we can deploy account along with the first user operation.
@@ -30,7 +34,10 @@ contract SignatureAccountFactory {
         entryPoint = _entryPoint;
     }
 
-    function createAccount(uint256 salt, address owner) public returns (SignatureAccount) {
+    function createAccount(
+        uint256 salt,
+        address owner
+    ) public returns (SignatureAccount) {
         address account = getAccountAddress(salt, owner);
         if (account.code.length > 0) {
             return SignatureAccount(account);
@@ -38,11 +45,19 @@ contract SignatureAccountFactory {
         return new SignatureAccount{ salt: bytes32(salt) }(entryPoint, owner);
     }
 
-    function getAccountAddress(uint256 salt, address owner) public view returns (address) {
+    function getAccountAddress(
+        uint256 salt,
+        address owner
+    ) public view returns (address) {
         return
             Create2.computeAddress(
                 bytes32(salt),
-                keccak256(abi.encodePacked(type(SignatureAccount).creationCode, abi.encode(entryPoint, owner)))
+                keccak256(
+                    abi.encodePacked(
+                        type(SignatureAccount).creationCode,
+                        abi.encode(entryPoint, owner)
+                    )
+                )
             );
     }
 }
