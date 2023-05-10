@@ -10,11 +10,8 @@ import { VoidAccount } from "contracts/VoidAccount.sol";
 import { ERC20Mintable } from "contracts/token/ERC20Mintable.sol";
 
 import { AATest } from "./utils/AATest.sol";
-import { Wallet, WalletLib } from "./utils/Wallet.sol";
 
 contract TokenPaymasterTest is AATest, ITokenPaymasterEvent {
-    using WalletLib for Wallet;
-
     ERC20Mintable token = new ERC20Mintable("ETH", "ETH");
 
     address account = address(new VoidAccount());
