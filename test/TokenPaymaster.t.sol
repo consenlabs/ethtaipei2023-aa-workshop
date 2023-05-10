@@ -12,6 +12,7 @@ import { ERC20Mintable } from "contracts/token/ERC20Mintable.sol";
 import { AATest } from "./utils/AATest.sol";
 
 contract TokenPaymasterTest is AATest, ITokenPaymasterEvent {
+    // Suppose token has 1:1 exchnage ratio to ETH
     ERC20Mintable token = new ERC20Mintable("ETH", "ETH");
 
     address account = address(new VoidAccount());
@@ -36,7 +37,11 @@ contract TokenPaymasterTest is AATest, ITokenPaymasterEvent {
         uint256 maxCost = (userOp.callGasLimit + userOp.verificationGasLimit * 3 + userOp.preVerificationGas) *
             userOp.maxFeePerGas;
 
+        // Mint token to account to pay for gas fee
         token.mint(account, maxCost);
+        uint256 accountBalanceBefore = maxCost;
+
+        // Approve paymaster to collect token from account
         vm.prank(account);
         token.approve(paymaster, maxCost);
 
@@ -54,9 +59,13 @@ contract TokenPaymasterTest is AATest, ITokenPaymasterEvent {
                 break;
             }
         }
-        (, uint256 cost) = abi.decode(postOp.data, (address, uint256));
-        uint256 balance = token.balanceOf(paymaster);
+        (, uint256 userOpGasCost) = abi.decode(postOp.data, (address, uint256));
 
-        assertEq(balance, cost);
+        // Paymaster should collect back his prefund gas cost from account in token
+        uint256 accountBalance = token.balanceOf(account);
+        assertEq(accountBalance, accountBalanceBefore - userOpGasCost);
+
+        uint256 paymasterBalance = token.balanceOf(paymaster);
+        assertEq(paymasterBalance, userOpGasCost);
     }
 }
