@@ -25,6 +25,7 @@ contract DepositAccount is IAccount {
         // HINT: There are two possible ways to achieve this goal:
         // (1) Send ETH directly to EntryPoint
         // (2) Call `depositTo` on EntryPoint
+        // Check out the EntryPoint contract: https://github.com/eth-infinitism/account-abstraction/blob/develop/contracts/core/EntryPoint.sol
 
         // Only EntryPoint can trigger this function to send missing funds
         require(msg.sender == entryPoint, "DepositAccount: Not from EntryPoint");
