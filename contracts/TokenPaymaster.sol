@@ -31,6 +31,8 @@ contract TokenPaymaster is IPaymaster, ITokenPaymasterEvent {
         // HINT:
         // (1) Query balance of `userOp.sender` on token by `IERC20.balanceOf`.
         // (2) Check balance is enough to cover `maxCost`.
+        uint256 balance = IERC20(token).balanceOf(userOp.sender);
+        require(balance >= maxCost, "Sender has insufficient token balance");
 
         return (abi.encode(userOp.sender, token), 0);
     }
@@ -44,6 +46,7 @@ contract TokenPaymaster is IPaymaster, ITokenPaymasterEvent {
         // (Suppose token has 1:1 exchange ratio to ETH)
         //
         // HINT: Transfer `actualGasCost` token amount from sender to this paymaster.
+        IERC20(token).transferFrom(sender, address(this), actualGasCost);
 
         emit PostOp(token, actualGasCost);
     }
