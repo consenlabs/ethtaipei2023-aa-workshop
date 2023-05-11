@@ -28,7 +28,12 @@ contract InitCodeTest is AATest {
         // Transfer 1 ether from account to recipient
         UserOperation memory userOp = createUserOp();
         userOp.sender = account;
-        userOp.callData = abi.encodeWithSelector(SignatureAccount.execute.selector, recipient.addr(), 1 ether, bytes(""));
+        userOp.callData = abi.encodeWithSelector(
+            SignatureAccount.execute.selector,
+            recipient.addr(),
+            1 ether,
+            bytes("")
+        );
 
         // Setup init code to deploy account before transfer
         userOp.initCode = InitCodeLib.pack(address(factory), salt, owner.addr());

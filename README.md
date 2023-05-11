@@ -97,6 +97,26 @@ Running 1 test for test/InitCode.t.sol:InitCodeTest
 [PASS] testInitCode() (gas: 327206)
 ```
 
+### 4. TokenPaymaster
+
+With paymaster, ERC-4337 account is able to pay gas fee by ERC20 token. Please implement `contracts/TokenPaymaster.sol` to make `test/TokenPaymaster.t.sol` passed.
+
+```bash
+$ npm run test:TokenPaymaster
+
+# Before
+# ...
+Encountered 2 failing tests in test/TokenPaymaster.t.sol:TokenPaymasterTest
+[FAIL. Reason: Call did not revert as expected] testCheckBalance() (gas: 59202)
+[FAIL. Reason: Assertion failed.] testCollectToken() (gas: 151149)
+
+# After
+# ...
+Running 2 tests for test/TokenPaymaster.t.sol:TokenPaymasterTest
+[PASS] testCheckBalance() (gas: 46067)
+[PASS] testCollectToken() (gas: 170160)
+```
+
 ---
 
 ## Bundler Demo

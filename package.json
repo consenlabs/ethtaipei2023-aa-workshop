@@ -6,11 +6,12 @@
     "compile": "forge build --force",
     "format": "prettier --write .",
     "lint": "solhint \"contracts/**/*.sol\"",
-    "test": "forge test --ffi",
+    "test": "forge test -vvv --ffi",
     "test:VoidAccount": "npm run test -- --match-path test/VoidAccount.t.sol",
     "test:DepositAccount": "npm run test -- --match-path test/DepositAccount.t.sol",
     "test:SignatureAccount": "npm run test -- --match-path test/SignatureAccount.t.sol",
-    "test:InitCode": "npm run test -- --match-path test/InitCode.t.sol"
+    "test:InitCode": "npm run test -- --match-path test/InitCode.t.sol",
+    "test:TokenPaymaster": "npm run test -- --match-path test/TokenPaymaster.t.sol"
   },
   "repository": {
     "type": "git",
