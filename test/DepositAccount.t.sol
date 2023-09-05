@@ -11,7 +11,7 @@ import { Wallet, WalletLib } from "./utils/Wallet.sol";
 contract DepositAccountTest is AATest {
     using WalletLib for Wallet;
 
-    address account = address(new DepositAccount(address(entryPoint)));
+    address account = address(new DepositAccount(entryPoint));
 
     function testExecuteUserOp() public {
         Wallet memory recipient = WalletLib.createRandomWallet(vm);
@@ -22,7 +22,7 @@ contract DepositAccountTest is AATest {
         // Transfer 1 ether from account to recipient
         UserOperation memory userOp = createUserOp();
         userOp.sender = account;
-        userOp.callData = abi.encodeWithSelector(DepositAccount.execute.selector, recipient.addr(), 1 ether, bytes(""));
+        userOp.callData = abi.encodeCall(DepositAccount.execute, (recipient.addr(), 1 ether, bytes("")));
 
         UserOperation[] memory userOps = new UserOperation[](1);
         userOps[0] = userOp;

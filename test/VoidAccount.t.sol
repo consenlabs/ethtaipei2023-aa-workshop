@@ -22,7 +22,7 @@ contract VoidAccountTest is AATest {
         // Transfer 1 ether from account to recipient
         UserOperation memory userOp = createUserOp();
         userOp.sender = account;
-        userOp.callData = abi.encodeWithSelector(VoidAccount.execute.selector, recipient.addr(), 1 ether, bytes(""));
+        userOp.callData = abi.encodeCall(VoidAccount.execute, (recipient.addr(), 1 ether, bytes("")));
 
         UserOperation[] memory userOps = new UserOperation[](1);
         userOps[0] = userOp;

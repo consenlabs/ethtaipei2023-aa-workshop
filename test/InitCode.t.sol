@@ -11,7 +11,7 @@ import { Wallet, WalletLib } from "./utils/Wallet.sol";
 contract InitCodeTest is AATest {
     using WalletLib for Wallet;
 
-    SignatureAccountFactory factory = new SignatureAccountFactory(address(entryPoint));
+    SignatureAccountFactory factory = new SignatureAccountFactory(entryPoint);
     Wallet owner = WalletLib.createRandomWallet(vm);
 
     function testInitCode() public {
@@ -28,12 +28,7 @@ contract InitCodeTest is AATest {
         // Transfer 1 ether from account to recipient
         UserOperation memory userOp = createUserOp();
         userOp.sender = account;
-        userOp.callData = abi.encodeWithSelector(
-            SignatureAccount.execute.selector,
-            recipient.addr(),
-            1 ether,
-            bytes("")
-        );
+        userOp.callData = abi.encodeCall(SignatureAccount.execute, (recipient.addr(), 1 ether, bytes("")));
 
         // Setup init code to deploy account before transfer
         userOp.initCode = InitCodeLib.pack(address(factory), salt, owner.addr());
