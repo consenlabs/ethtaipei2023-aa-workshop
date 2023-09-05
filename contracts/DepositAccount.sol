@@ -30,7 +30,7 @@ contract DepositAccount is IAccount {
         // * Convert interface to address payable, for example, `payable(address(entryPoint))`
         //
         // (2) Call `depositTo` on EntryPoint
-        // * Check out the EntryPoint interface: https://github.com/eth-infinitism/account-abstraction/blob/dae9733bf78bcb7576f572d67497c2d241ae4da1/contracts/interfaces/IStakeManager.sol#L76-L80
+        // * Check out the StakeManager interface, which is implemented by EntryPoint: https://github.com/eth-infinitism/account-abstraction/blob/dae9733bf78bcb7576f572d67497c2d241ae4da1/contracts/interfaces/IStakeManager.sol#L76-L80
     }
 
     function execute(address target, uint256 value, bytes calldata data) external {
