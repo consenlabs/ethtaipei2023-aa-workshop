@@ -13,7 +13,7 @@ contract SignatureAccountTest is AATest {
     using WalletLib for Wallet;
 
     Wallet owner = WalletLib.createRandomWallet(vm);
-    address account = address(new SignatureAccount(address(entryPoint), owner.addr()));
+    address account = address(new SignatureAccount(entryPoint, owner.addr()));
 
     function setUp() public {
         entryPoint.depositTo{ value: 1 ether }(account);
@@ -26,7 +26,7 @@ contract SignatureAccountTest is AATest {
         // Transfer 1 ether from account signed by other
         UserOperation memory userOp = createUserOp();
         userOp.sender = account;
-        userOp.callData = abi.encodeWithSelector(SignatureAccount.execute.selector, other.addr(), 1 ether, bytes(""));
+        userOp.callData = abi.encodeCall(SignatureAccount.execute, (other.addr(), 1 ether, bytes("")));
         signUserOp(other, userOp);
 
         UserOperation[] memory userOps = new UserOperation[](1);
@@ -42,12 +42,7 @@ contract SignatureAccountTest is AATest {
         // Transfer 1 ether from account signed by owner
         UserOperation memory userOp = createUserOp();
         userOp.sender = account;
-        userOp.callData = abi.encodeWithSelector(
-            SignatureAccount.execute.selector,
-            recipient.addr(),
-            1 ether,
-            bytes("")
-        );
+        userOp.callData = abi.encodeCall(SignatureAccount.execute, (recipient.addr(), 1 ether, bytes("")));
         signUserOp(owner, userOp);
 
         UserOperation[] memory userOps = new UserOperation[](1);

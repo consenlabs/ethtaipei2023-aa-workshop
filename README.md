@@ -6,6 +6,7 @@
 
 -   [Account Abstraction & ERC-4337](https://www.canva.com/design/DAFf5HAyHdA/aE72J5rZKlbPKoF1rIpWbQ/edit) by [@Alfred](https://github.com/ChiHaoLu)
 -   [ERC-4337: Payment, Validation and Deployment](https://docs.google.com/presentation/d/1EF2JaSPBi3qqT6dEGge0xcAsEjSI50jXylkxEorFuso/edit?usp=sharing) by [@Nic](https://github.com/NIC619)
+-   [ERC-4337: Paymaster](https://docs.google.com/presentation/d/12e9B-KYJFjPkx-szke_X91qt9DA8l7Dypp5d-RiVbDY/edit?usp=sharing) by [@David](https://github.com/108356037)
 -   [ERC-4337: Limitations on Bundler](https://docs.google.com/presentation/d/1776RAo1QUwsU9pjbQW3t0IFyW7HorNCDTy9GDWkApFk/edit?usp=sharing) by [@David](https://github.com/108356037)
 -   [ERC-4337: Debugging Tips](https://docs.google.com/presentation/d/1aGIUsOETs3nvb_Et_Q2CTmuQDpN0d_M0iXx6ovnGVWw/edit?usp=sharing) by [@Nic](https://github.com/NIC619)
 
