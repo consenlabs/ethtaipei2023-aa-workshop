@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: MIT
-/* solhint-disable no-inline-assembly no-unused-vars */
 pragma solidity 0.8.17;
 
+/* solhint-disable no-inline-assembly no-unused-vars */
+
 import { IAccount } from "aa/interfaces/IAccount.sol";
+import { IEntryPoint } from "aa/interfaces/IEntryPoint.sol";
 import { UserOperation } from "aa/interfaces/UserOperation.sol";
 
 import { Create2 } from "oz/utils/Create2.sol";
@@ -19,15 +21,17 @@ library InitCodeLib {
         // HINT:
         // (1) First 20 bytes of the init code should be the address of account factory.
         // (2) Right after the first 20 bytes, it should concat with function selector and arguments of the `createAccount` function on `SignatureAccountFactory`.
-        // (3) There are two useful abi utils: `abi.encodePacked` and `abi.encodeWithSelector`.
+        //
+        // There are two useful utils to acheive the goal: `abi.encodePacked` and `abi.encodeCall`.
+        // * https://solidity-fr.readthedocs.io/fr/latest/cheatsheet.html#global-variables
         initCode = bytes("");
     }
 }
 
 contract SignatureAccountFactory {
-    address public entryPoint;
+    IEntryPoint public entryPoint;
 
-    constructor(address _entryPoint) {
+    constructor(IEntryPoint _entryPoint) {
         entryPoint = _entryPoint;
     }
 
