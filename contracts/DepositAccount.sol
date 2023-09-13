@@ -27,13 +27,14 @@ contract DepositAccount is IAccount {
         //
         // (1) Send ETH directly to EntryPoint
         // * Sending ETH in Solidity: https://solidity-by-example.org/sending-ether/
-        // * Convert interface to address payable, for example, `payable(address(entryPoint))`
+        // * Convert interface to address payable: `payable(address(entryPoint))`
         //
-        // (2) Call `depositTo` on EntryPoint
+        // (2) Call `depositTo` on EntryPoint: `entryPoint.depositTo{ value: amount }(address(this))`
         // * Check out the StakeManager interface, which is implemented by EntryPoint: https://github.com/eth-infinitism/account-abstraction/blob/dae9733bf78bcb7576f572d67497c2d241ae4da1/contracts/interfaces/IStakeManager.sol#L76-L80
     }
 
     function execute(address target, uint256 value, bytes calldata data) external {
+        require(msg.sender == address(entryPoint), "DepositAccount: Unauthorized caller");
         (bool success, bytes memory result) = target.call{ value: value }(data);
         if (!success) {
             assembly {
