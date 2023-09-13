@@ -18,6 +18,11 @@
 ## Setup
 
 ```bash
+# Clone the repository and change directory into it
+$ git clone git@github.com:consenlabs/ethtaipei2023-aa-workshop.git
+$ cd ethtaipei2023-aa-workshop
+
+# Setup the directory
 $ forge install
 $ npm install
 ```
