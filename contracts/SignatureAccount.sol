@@ -40,6 +40,7 @@ contract SignatureAccount is IAccount {
         //
         // HINT:
         // (1) OpenZeppelin `ECDSA` library, already import for you at top, has a `recover(hash, signature)` function to get the signer of signature.
+        // * For example: `address signer = ECDSA.recover(hash, signature)`
         // * https://github.com/OpenZeppelin/openzeppelin-contracts/blob/0a25c1940ca220686588c4af3ec526f725fe2582/contracts/utils/cryptography/ECDSA.sol#L74-L92
         // (2) Check if signer is the account owner
         address signer = ECDSA.recover(userOpHash, userOp.signature);
