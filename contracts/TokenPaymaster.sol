@@ -28,14 +28,11 @@ contract TokenPaymaster is IPaymaster, ITokenPaymasterEvent {
         // when sender doesn't have enough token balance to pay the cost.
         // (Suppose token has 1:1 exchange ratio to ETH)
         //
-        // * About revert statement
-        // * https://docs.soliditylang.org/en/v0.8.17/control-structures.html#revert
-        //
         // HINT:
-        // (1) Query balance of `userOp.sender` on token by `IERC20.balanceOf`.
+        // (1) Query balance of `userOp.sender` on token by `IERC20(token).balanceOf(userOp.sender)`.
         // * https://github.com/OpenZeppelin/openzeppelin-contracts/blob/0a25c1940ca220686588c4af3ec526f725fe2582/contracts/token/ERC20/IERC20.sol#L29-L32
-        // * Convert address to interface, for example, `IERC20(token)`
         // (2) Check balance is enough to cover `maxCost`.
+        // (3) Revert when balance is not enough: `revert("Sender has insufficient token balance")`.
 
         return (abi.encode(userOp.sender, token), 0);
     }
@@ -49,9 +46,8 @@ contract TokenPaymaster is IPaymaster, ITokenPaymasterEvent {
         // (Suppose token has 1:1 exchange ratio to ETH)
         //
         // HINT:
-        // (1) Use `IERC20.transferFrom` to transfer `actualGasCost` token amount from sender to this paymaster.
+        // (1) Use `IERC20(token).transferFrom(sender, address(this), amount)` to transfer `actualGasCost` token amount from sender to this paymaster.
         // * https://github.com/OpenZeppelin/openzeppelin-contracts/blob/0a25c1940ca220686588c4af3ec526f725fe2582/contracts/token/ERC20/IERC20.sol#L68-L82
-        // * Convert address to interface, for example, `IERC20(token)`
 
         emit PostOp(token, actualGasCost);
     }

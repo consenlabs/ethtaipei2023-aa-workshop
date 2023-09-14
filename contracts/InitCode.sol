@@ -20,10 +20,10 @@ library InitCodeLib {
         //
         // HINT:
         // (1) First 20 bytes of the init code should be the address of account factory.
+        // * For example: `abi.encodePacked(factory, data derived in (2))`
         // (2) Right after the first 20 bytes, it should concat with function selector and arguments of the `createAccount` function on `SignatureAccountFactory`.
-        //
-        // There are two useful utils to acheive the goal: `abi.encodePacked` and `abi.encodeCall`.
-        // * https://solidity-fr.readthedocs.io/fr/latest/cheatsheet.html#global-variables
+        // * For example: `abi.encodeCall(SignatureAccountFactory.createAccount, (salt, owner))`
+
         initCode = bytes("");
     }
 }
